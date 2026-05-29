@@ -1205,6 +1205,43 @@
     font-weight: 700;
     flex-shrink: 0;
   }
+
+  /* ─── SUB-NAV ─────────────────────────────── */
+  .sub-nav-tabs {
+    background: #1c1c1c;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 0 24px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .sub-nav-tabs::-webkit-scrollbar { display: none; }
+
+  .sub-tab-btn {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.45);
+    font-family: "Segoe UI", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 10px 16px 8px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sub-tab-btn:hover { color: rgba(255,255,255,0.75); }
+  .sub-tab-btn.active {
+    color: rgba(255,255,255,0.90);
+    border-bottom-color: rgba(255,255,255,0.30);
+  }
+  .sub-tab-btn .mi { font-size: 14px; vertical-align: -2px; opacity: .80; }
 </style>
 </head>
 <body>
@@ -1232,15 +1269,15 @@
 
 <!-- NAV -->
 <nav class="nav-tabs" id="navTabs">
-  <button class="tab-btn active" onclick="showSection('intro',this)"><span class="mi">home</span>Start</button>
-  <button class="tab-btn" onclick="showSection('dos-donts',this)"><span class="mi">thumb_up</span>Tips</button>
-  <button class="tab-btn" onclick="showSection('apps',this)"><span class="mi">apps</span>Per app</button>
+  <button class="tab-btn active" onclick="showSection('intro',this)"><span class="mi">home</span>General</button>
+  <button class="tab-btn" onclick="showSection('ai-copilot',this)"><span class="mi">smart_toy</span>AI / Copilot</button>
+  <button class="tab-btn" onclick="showSection('copilot-sligro',this)"><span class="mi">storefront</span>Copilot in Sligro</button>
   <button class="tab-btn" onclick="showSection('prompts',this)"><span class="mi">edit_note</span>Prompt builder</button>
-  <button class="tab-btn" onclick="showSection('capabilities',this)"><span class="mi">rocket_launch</span>Werk slimmer</button>
-  <button class="tab-btn" onclick="showSection('limitations',this)"><span class="mi">verified</span>Kwaliteit</button>
-  <button class="tab-btn" onclick="showSection('privacy',this)"><span class="mi">shield</span>Veilig werken</button>
-  <button class="tab-btn" onclick="showSection('faq',this)"><span class="mi">help</span>Vragen</button>
+  <button class="tab-btn" onclick="showSection('agent-builder',this)"><span class="mi">precision_manufacturing</span>Agent builder</button>
+  <button class="tab-btn" onclick="showSection('workflows',this)"><span class="mi">account_tree</span>Workflows</button>
+  <button class="tab-btn" onclick="showSection('faq',this)"><span class="mi">help</span>FAQ</button>
 </nav>
+<nav class="sub-nav-tabs" id="subNavTabs" style="display:none;"></nav>
 
 <main>
 
@@ -1858,6 +1895,36 @@
 </section>
 
 <!-- ═══════════════════════════════════════════
+     AGENT BUILDER
+     ═══════════════════════════════════════════ -->
+<section class="section" id="agent-builder">
+  <div class="section-header">
+    <div class="section-label">In ontwikkeling</div>
+    <h2 class="section-title">Agent builder</h2>
+    <p class="section-desc">Training in het bouwen en inzetten van agents via de Copilot-app.</p>
+  </div>
+  <div class="highlight-box">
+    <h4>Komt eraan</h4>
+    <p>Deze sectie is in ontwikkeling. Hier komt praktische training over het bouwen van agents via Microsoft Copilot Studio en de Copilot-app — inclusief configuratie, instructies en testworkflows.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     WORKFLOWS
+     ═══════════════════════════════════════════ -->
+<section class="section" id="workflows">
+  <div class="section-header">
+    <div class="section-label">In ontwikkeling</div>
+    <h2 class="section-title">Workflows</h2>
+    <p class="section-desc">Automatisering en workflows bouwen met Microsoft Copilot (Frontier).</p>
+  </div>
+  <div class="highlight-box">
+    <h4>Komt eraan</h4>
+    <p>Deze sectie is in ontwikkeling. Hier komt training over het opzetten van geautomatiseerde workflows via Microsoft Copilot en Power Automate — van eenvoudige triggers tot agentic processen.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
      SECTIE 8: FAQ
      ═══════════════════════════════════════════ -->
 <section class="section" id="faq">
@@ -1943,14 +2010,64 @@
 </div>
 
 <script>
+  // ── Bundle definitions
+  const bundles = {
+    'ai-copilot': {
+      first: 'capabilities',
+      panels: ['capabilities', 'limitations'],
+      subTabs: [
+        { label: 'Mogelijkheden', icon: 'rocket_launch', id: 'capabilities' },
+        { label: 'Beperkingen & AI-begrippen', icon: 'verified', id: 'limitations' }
+      ]
+    },
+    'copilot-sligro': {
+      first: 'dos-donts',
+      panels: ['dos-donts', 'apps', 'privacy'],
+      subTabs: [
+        { label: "Tips & Do's", icon: 'thumb_up', id: 'dos-donts' },
+        { label: 'Per app', icon: 'apps', id: 'apps' },
+        { label: 'Veilig werken', icon: 'shield', id: 'privacy' }
+      ]
+    }
+  };
+
   // ── Tab navigation
   function showSection(id, btn) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
     btn.classList.add('active');
-    if (id === 'capabilities') animateBars();
-    renderTips(id);
+    const subNav = document.getElementById('subNavTabs');
+
+    if (bundles[id]) {
+      const bundle = bundles[id];
+      document.getElementById(bundle.first).classList.add('active');
+      subNav.innerHTML = bundle.subTabs.map((t, i) =>
+        `<button class="sub-tab-btn${i === 0 ? ' active' : ''}" onclick="showSubPanel('${id}','${t.id}',this)">` +
+        `<span class="mi">${t.icon}</span>${t.label}</button>`
+      ).join('');
+      subNav.style.display = 'flex';
+      if (bundle.first === 'capabilities') animateBars();
+      renderTips(bundle.first);
+    } else {
+      document.getElementById(id).classList.add('active');
+      subNav.style.display = 'none';
+      if (id === 'capabilities') animateBars();
+      renderTips(id);
+    }
+    window.scrollTo({ top: document.querySelector('.nav-tabs').offsetTop - 10, behavior: 'smooth' });
+  }
+
+  function showSubPanel(bundleId, panelId, btn) {
+    const bundle = bundles[bundleId];
+    bundle.panels.forEach(p => {
+      const el = document.getElementById(p);
+      if (el) el.classList.remove('active');
+    });
+    document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(panelId).classList.add('active');
+    btn.classList.add('active');
+    if (panelId === 'capabilities') animateBars();
+    renderTips(panelId);
     window.scrollTo({ top: document.querySelector('.nav-tabs').offsetTop - 10, behavior: 'smooth' });
   }
 
