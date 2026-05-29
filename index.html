@@ -225,7 +225,11 @@
   .section { display: none; }
   .section.active { display: block; }
 
-  .section-header { margin-bottom: 36px; }
+  .section-header {
+    margin-bottom: 44px;
+    padding-left: 20px;
+    border-left: 4px solid var(--sligro-green);
+  }
 
   .section-label {
     font-size: 11px;
@@ -233,23 +237,77 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--sligro-green);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
 
   .section-title {
     font-family: Rockwell, "Rockwell Nova", "Courier Bold", Georgia, serif;
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
     font-weight: 700;
     color: var(--black);
-    line-height: 1.1;
-    letter-spacing: -0.01em;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
   }
 
   .section-desc {
     color: var(--text-dim);
-    max-width: 660px;
-    margin-top: 10px;
+    max-width: 600px;
+    margin-top: 12px;
     font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  /* ─── FEATURE ROWS (replaces card grid) ─── */
+  .feature-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 48px;
+    border-top: 1px solid var(--border);
+  }
+
+  .feature-row {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 0 28px;
+    padding: 26px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+
+  .feature-row-num {
+    font-family: Rockwell, "Rockwell Nova", Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--sligro-green);
+    line-height: 1;
+    padding-top: 3px;
+    opacity: 0.7;
+  }
+
+  .feature-row-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+    padding-top: 2px;
+  }
+
+  .feature-row h3 {
+    font-family: "Segoe UI", sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 5px;
+  }
+
+  .feature-row p {
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  @media (max-width: 560px) {
+    .feature-row { grid-template-columns: 36px 1fr; gap: 0 16px; }
   }
 
   /* ─── CARD GRID ─────────────────────────── */
@@ -737,39 +795,47 @@
 
   /* ─── LIMITATION BOXES ──────────────────── */
   .limit-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
     margin-bottom: 40px;
+    border-top: 1px solid var(--border);
   }
 
   .limit-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 4px solid;
-    border-radius: var(--radius);
-    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: 14px 1fr;
+    gap: 0 18px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
   }
 
-  .limit-item.warn   { border-left-color: var(--sligro-amber); }
-  .limit-item.info   { border-left-color: var(--accent-blue); }
-  .limit-item.danger { border-left-color: var(--accent-red); }
+  .limit-item::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-top: 7px;
+    justify-self: center;
+  }
+
+  .limit-item.warn::before   { background: var(--sligro-amber); }
+  .limit-item.info::before   { background: var(--sligro-green); }
+  .limit-item.danger::before { background: var(--accent-red); }
 
   .limit-item h4 {
     font-family: "Segoe UI", sans-serif;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     font-weight: 700;
     color: var(--black);
-    margin-bottom: 5px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    margin-bottom: 3px;
   }
 
   .limit-item p {
     font-size: 0.8rem;
     color: var(--text-dim);
-    line-height: 1.6;
+    line-height: 1.65;
   }
 
   /* ─── PRIVACY TABLE ─────────────────────── */
@@ -1297,36 +1363,30 @@
     <p>Copilot is een digitale werkassistent binnen Microsoft 365. Je stelt een vraag in gewone taal en Copilot helpt met een eerste versie, samenvatting, overzicht of voorstel. Jij blijft degene die beoordeelt, aanpast en beslist wat je gebruikt.</p>
   </div>
 
-  <div class="cards-grid">
-    <div class="card cyan">
-      <div class="card-icon cyan-bg">✍️</div>
-      <h3>Schrijven en herschrijven</h3>
-      <p>Maak sneller een eerste versie van een mail, tekst, samenvatting, agenda of bericht. Jij maakt de inhoud daarna passend voor Sligro.</p>
+  <div class="feature-rows">
+    <div class="feature-row">
+      <div class="feature-row-icon">✍️</div>
+      <div><h3>Schrijven en herschrijven</h3><p>Maak sneller een eerste versie van een mail, tekst, samenvatting, agenda of bericht. Jij maakt de inhoud daarna passend voor Sligro.</p></div>
     </div>
-    <div class="card blue">
-      <div class="card-icon blue-bg">📚</div>
-      <h3>Informatie terugvinden</h3>
-      <p>Vraag om hoofdlijnen, openstaande acties of verschillen tussen documenten op basis van informatie waar jij normaal ook bij kunt.</p>
+    <div class="feature-row">
+      <div class="feature-row-icon">📚</div>
+      <div><h3>Informatie terugvinden</h3><p>Vraag om hoofdlijnen, openstaande acties of verschillen tussen documenten op basis van informatie waar jij normaal ook bij kunt.</p></div>
     </div>
-    <div class="card purple">
-      <div class="card-icon purple-bg">🗂️</div>
-      <h3>Werk structureren</h3>
-      <p>Laat ruwe notities, lange teksten of losse ideeën omzetten naar een duidelijke structuur, takenlijst, tabel of planning.</p>
+    <div class="feature-row">
+      <div class="feature-row-icon">🗂️</div>
+      <div><h3>Werk structureren</h3><p>Laat ruwe notities, lange teksten of losse ideeën omzetten naar een duidelijke structuur, takenlijst, tabel of planning.</p></div>
     </div>
-    <div class="card green">
-      <div class="card-icon green-bg">💬</div>
-      <h3>Gesprekken voorbereiden</h3>
-      <p>Bereid overleg voor, bedenk vragen, vat besluiten samen en maak vervolgacties concreet.</p>
+    <div class="feature-row">
+      <div class="feature-row-icon">💬</div>
+      <div><h3>Gesprekken voorbereiden</h3><p>Bereid overleg voor, bedenk vragen, vat besluiten samen en maak vervolgacties concreet.</p></div>
     </div>
-    <div class="card orange">
-      <div class="card-icon orange-bg">📊</div>
-      <h3>Inzicht krijgen</h3>
-      <p>Vraag Copilot om patronen, opvallende punten en mogelijke vervolgstappen te benoemen in tabellen, rapportages of lijsten.</p>
+    <div class="feature-row">
+      <div class="feature-row-icon">📊</div>
+      <div><h3>Inzicht krijgen</h3><p>Vraag Copilot om patronen, opvallende punten en mogelijke vervolgstappen te benoemen in tabellen, rapportages of lijsten.</p></div>
     </div>
-    <div class="card red">
-      <div class="card-icon red-bg">✅</div>
-      <h3>Altijd zelf beoordelen</h3>
-      <p>Copilot versnelt je werk, maar jij blijft eigenaar van de inhoud. Controleer altijd of de output klopt en geschikt is om te delen.</p>
+    <div class="feature-row">
+      <div class="feature-row-icon">✅</div>
+      <div><h3>Altijd zelf beoordelen</h3><p>Copilot versnelt je werk, maar jij blijft eigenaar van de inhoud. Controleer altijd of de output klopt en geschikt is om te delen.</p></div>
     </div>
   </div>
 
@@ -1606,13 +1666,31 @@
   </div>
   <div id="tipsStrip-capabilities"></div>
 
-  <div class="cards-grid">
-    <div class="card green"><div class="card-icon green-bg">1</div><h3>Start je dag sneller</h3><p>Vraag om een overzicht van belangrijke mails, afspraken, openstaande acties en onderwerpen die aandacht vragen.</p></div>
-    <div class="card blue"><div class="card-icon blue-bg">2</div><h3>Lees minder, begrijp meer</h3><p>Laat lange documenten, mailwisselingen of Teams-chats samenvatten in hoofdlijnen, besluiten en acties.</p></div>
-    <div class="card orange"><div class="card-icon orange-bg">3</div><h3>Schrijf met minder drempel</h3><p>Gebruik Copilot voor een eerste concept en vraag daarna om een kortere, warmere of duidelijkere versie.</p></div>
-    <div class="card purple"><div class="card-icon purple-bg">4</div><h3>Bereid overleg voor</h3><p>Vraag om agendapunten, lastige vragen, beslispunten of een korte briefing op basis van de juiste informatie.</p></div>
-    <div class="card cyan"><div class="card-icon cyan-bg">5</div><h3>Maak acties concreet</h3><p>Laat Copilot afspraken omzetten naar actiepunten met eigenaar, deadline en eerstvolgende stap.</p></div>
-    <div class="card red"><div class="card-icon red-bg">6</div><h3>Verbeter kwaliteit</h3><p>Vraag Copilot om gaten, onduidelijkheden, aannames of ontbrekende informatie in je tekst te signaleren.</p></div>
+  <div class="feature-rows">
+    <div class="feature-row">
+      <div class="feature-row-num">01</div>
+      <div><h3>Start je dag sneller</h3><p>Vraag om een overzicht van belangrijke mails, afspraken, openstaande acties en onderwerpen die aandacht vragen.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">02</div>
+      <div><h3>Lees minder, begrijp meer</h3><p>Laat lange documenten, mailwisselingen of Teams-chats samenvatten in hoofdlijnen, besluiten en acties.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">03</div>
+      <div><h3>Schrijf met minder drempel</h3><p>Gebruik Copilot voor een eerste concept en vraag daarna om een kortere, warmere of duidelijkere versie.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">04</div>
+      <div><h3>Bereid overleg voor</h3><p>Vraag om agendapunten, lastige vragen, beslispunten of een korte briefing op basis van de juiste informatie.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">05</div>
+      <div><h3>Maak acties concreet</h3><p>Laat Copilot afspraken omzetten naar actiepunten met eigenaar, deadline en eerstvolgende stap.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">06</div>
+      <div><h3>Verbeter kwaliteit</h3><p>Vraag Copilot om gaten, onduidelijkheden, aannames of ontbrekende informatie in je tekst te signaleren.</p></div>
+    </div>
   </div>
 
   <div class="highlight-box">
@@ -1639,26 +1717,22 @@
     <p>Copilot is een taalmodel: het genereert de meest waarschijnlijke voortzetting van jouw vraag op basis van patronen in tekst. Het weet niets zeker. Het heeft geen toegang tot actuele data buiten je Microsoft 365-omgeving en kent geen Sligro-specifieke afspraken tenzij jij die aanlevert. Een overtuigende formulering is geen garantie voor correctheid. Jij bent de eindverantwoordelijke voor wat je deelt.</p>
   </div>
 
-  <div class="cards-grid" style="margin-bottom:32px;">
-    <div class="card orange">
-      <div class="card-icon orange-bg"><span class="mi" style="color:var(--sligro-amber);font-size:20px;">psychology_alt</span></div>
-      <h3>Hallucinaties</h3>
-      <p>Copilot kan namen, bedragen, datums of feiten verzinnen die plausibel klinken maar onjuist zijn. Dit gebeurt vaker bij weinig context of buiten zijn directe kennisbasis. Altijd verifiëren.</p>
+  <div class="feature-rows" style="margin-bottom:32px;">
+    <div class="feature-row">
+      <div class="feature-row-icon"><span class="mi" style="color:var(--sligro-amber);font-size:20px;">psychology_alt</span></div>
+      <div><h3>Hallucinaties</h3><p>Copilot kan namen, bedragen, datums of feiten verzinnen die plausibel klinken maar onjuist zijn. Dit gebeurt vaker bij weinig context of buiten zijn directe kennisbasis. Altijd verifiëren.</p></div>
     </div>
-    <div class="card blue">
-      <div class="card-icon blue-bg"><span class="mi" style="color:var(--accent-blue);font-size:20px;">schedule</span></div>
-      <h3>Geen actuele data</h3>
-      <p>Copilot heeft geen toegang tot live systemen of actueel internet. Voor recente marktprijzen, besluiten of nieuws is het volledig afhankelijk van bestanden die jij aanlevert.</p>
+    <div class="feature-row">
+      <div class="feature-row-icon"><span class="mi" style="color:var(--accent-blue);font-size:20px;">schedule</span></div>
+      <div><h3>Geen actuele data</h3><p>Copilot heeft geen toegang tot live systemen of actueel internet. Voor recente marktprijzen, besluiten of nieuws is het volledig afhankelijk van bestanden die jij aanlevert.</p></div>
     </div>
-    <div class="card purple">
-      <div class="card-icon purple-bg"><span class="mi" style="color:var(--accent-purple);font-size:20px;">hearing</span></div>
-      <h3>Alleen wat jij vertelt</h3>
-      <p>Copilot werkt alleen met de context die jij geeft en de M365-data waar jij toegang toe hebt. Onvolledige input leidt tot onvolledige output — het gat vult Copilot zelf op.</p>
+    <div class="feature-row">
+      <div class="feature-row-icon"><span class="mi" style="color:var(--accent-purple);font-size:20px;">hearing</span></div>
+      <div><h3>Alleen wat jij vertelt</h3><p>Copilot werkt alleen met de context die jij geeft en de M365-data waar jij toegang toe hebt. Onvolledige input leidt tot onvolledige output — het gat vult Copilot zelf op.</p></div>
     </div>
-    <div class="card red">
-      <div class="card-icon red-bg"><span class="mi" style="color:var(--accent-red);font-size:20px;">record_voice_over</span></div>
-      <h3>Altijd zelfverzekerd</h3>
-      <p>Copilot formuleert antwoorden stellig, ook als het onzeker is. Een vloeiende, overtuigende zin zegt niets over de juistheid van de inhoud eronder.</p>
+    <div class="feature-row">
+      <div class="feature-row-icon"><span class="mi" style="color:var(--accent-red);font-size:20px;">record_voice_over</span></div>
+      <div><h3>Altijd zelfverzekerd</h3><p>Copilot formuleert antwoorden stellig, ook als het onzeker is. Een vloeiende, overtuigende zin zegt niets over de juistheid van de inhoud eronder.</p></div>
     </div>
   </div>
 
@@ -1867,13 +1941,31 @@
   </div>
   <div id="tipsStrip-privacy"></div>
 
-  <div class="cards-grid">
-    <div class="card green"><div class="card-icon green-bg">1</div><h3>Gebruik werkinformatie bewust</h3><p>Copilot kan helpen met bestanden, mails en vergaderingen waar jij toegang toe hebt. Vraag alleen om informatie die je nodig hebt voor je werk.</p></div>
-    <div class="card blue"><div class="card-icon blue-bg">2</div><h3>Houd vertrouwelijk vertrouwelijk</h3><p>Als een document, mail of gesprek vertrouwelijk is, behandel de Copilot-samenvatting of concepttekst ook als vertrouwelijk.</p></div>
-    <div class="card orange"><div class="card-icon orange-bg">3</div><h3>Laat onnodige persoonsgegevens weg</h3><p>Gebruik geen BSN's, privegegevens, medische informatie, wachtwoorden of bankgegevens in prompts als dat niet strikt nodig is.</p></div>
-    <div class="card purple"><div class="card-icon purple-bg">4</div><h3>Controleer voordat je doorstuurt</h3><p>Lees output na op gevoelige informatie, verkeerde aannames en informatie die niet voor de ontvanger bedoeld is.</p></div>
-    <div class="card cyan"><div class="card-icon cyan-bg">5</div><h3>Gebruik de juiste bron</h3><p>Verwijs naar het juiste bestand of de juiste mail, zodat Copilot niet hoeft te gokken op basis van te weinig context.</p></div>
-    <div class="card red"><div class="card-icon red-bg">6</div><h3>Vraag hulp bij twijfel</h3><p>Twijfel je of informatie gedeeld mag worden? Vraag je leidinggevende, Privacy Officer of de juiste Sligro-contactpersoon.</p></div>
+  <div class="feature-rows">
+    <div class="feature-row">
+      <div class="feature-row-num">01</div>
+      <div><h3>Gebruik werkinformatie bewust</h3><p>Copilot kan helpen met bestanden, mails en vergaderingen waar jij toegang toe hebt. Vraag alleen om informatie die je nodig hebt voor je werk.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">02</div>
+      <div><h3>Houd vertrouwelijk vertrouwelijk</h3><p>Als een document, mail of gesprek vertrouwelijk is, behandel de Copilot-samenvatting of concepttekst ook als vertrouwelijk.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">03</div>
+      <div><h3>Laat onnodige persoonsgegevens weg</h3><p>Gebruik geen BSN's, privégegevens, medische informatie, wachtwoorden of bankgegevens in prompts als dat niet strikt nodig is.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">04</div>
+      <div><h3>Controleer voordat je doorstuurt</h3><p>Lees output na op gevoelige informatie, verkeerde aannames en informatie die niet voor de ontvanger bedoeld is.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">05</div>
+      <div><h3>Gebruik de juiste bron</h3><p>Verwijs naar het juiste bestand of de juiste mail, zodat Copilot niet hoeft te gokken op basis van te weinig context.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">06</div>
+      <div><h3>Vraag hulp bij twijfel</h3><p>Twijfel je of informatie gedeeld mag worden? Vraag je leidinggevende, Privacy Officer of de juiste Sligro-contactpersoon.</p></div>
+    </div>
   </div>
 
   <div class="do-dont-grid">
