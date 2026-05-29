@@ -1,0 +1,2868 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft 365 Copilot Gids voor Slimmer Werken</title>
+<meta name="description" content="Een interactieve gids voor Microsoft 365 Copilot bij Sligro Food Group — van basisconcepten tot kant-en-klare prompts.">
+<meta property="og:title" content="Microsoft 365 Copilot Gids voor Slimmer Werken">
+<meta property="og:description" content="Van prompt bouwen tot het begrijpen van LLM's — alles wat je nodig hebt om Copilot goed te gebruiken.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#009564">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+  /* ═══════════════════════════════════════════
+     SLIGRO COLOURS
+     Green:       #009564   Amber:  #FFC034
+     Black:       #1A1A1A   White:  #FFFFFF
+     Light grey:  #F4F4F4   Border: #DEDEDE
+     Mid grey:    #6E6E6E
+     Fonts: Rockwell (display) · Segoe UI (body)
+     ═══════════════════════════════════════════ */
+
+  :root {
+    --bg:          #F4F4F4;
+    --surface:     #FFFFFF;
+    --surface2:    #EFEFEF;
+    --border:      #DEDEDE;
+    --sligro-green:#009564;
+    --sligro-dk:   #007A52;
+    --sligro-yellow:#FFC034;
+    --sligro-yellow-dk: #E5A820;
+    --black:       #1A1A1A;
+    --text:        #1A1A1A;
+    --text-dim:    #6E6E6E;
+    --text-bright: #1A1A1A;
+    --accent-green:  #009564;
+    --accent-blue:   #007AB8;
+    --accent-orange: #E07B00;
+    --accent-red:    #C8001E;
+    --accent-purple: #5C3D8F;
+    --accent-cyan:   #009564;
+    --ms-blue:       #0078d4;
+    --radius: 4px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.09);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  body::before { display: none; }
+
+  /* ─── HERO ─────────────────────────────── */
+  .hero {
+    position: relative;
+    min-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px 96px;
+    text-align: center;
+    overflow: hidden;
+    background: var(--sligro-green);
+  }
+
+  /* Amber accent line at bottom of hero */
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--sligro-yellow);
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% -5%, rgba(255,255,255,0.10) 0%, transparent 65%),
+      radial-gradient(ellipse 35% 35% at 92% 92%, rgba(0,0,0,0.10) 0%, transparent 55%);
+    pointer-events: none;
+  }
+
+  .grid-lines {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 56px 56px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 0%, transparent 80%);
+  }
+
+  .ms-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.30);
+    border-radius: var(--radius);
+    padding: 6px 16px;
+    font-size: 11px;
+    font-family: "Segoe UI", sans-serif;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.09em;
+    margin-bottom: 28px;
+    text-transform: uppercase;
+  }
+
+  .hero h1 {
+    font-family: Rockwell, "Rockwell Nova", "Courier Bold", Georgia, serif;
+    font-size: clamp(2.6rem, 7vw, 5.2rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: #ffffff;
+    max-width: 820px;
+    margin-bottom: 22px;
+  }
+
+  .hero h1 span {
+    color: var(--sligro-yellow);
+    -webkit-text-fill-color: var(--sligro-yellow);
+    background: none;
+  }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.88);
+    max-width: 560px;
+    margin-bottom: 36px;
+    font-weight: 400;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 52px;
+  }
+
+  .hero-meta span {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.92);
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.22);
+    padding: 4px 12px;
+    border-radius: var(--radius);
+  }
+
+  .scroll-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    color: rgba(255,255,255,0.55);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    animation: bounce 2s ease-in-out infinite;
+  }
+  .scroll-hint svg { opacity: 0.5; }
+
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(6px); }
+  }
+
+  /* ─── NAV ───────────────────────────────── */
+  .nav-tabs {
+    position: sticky;
+    top: 0; z-index: 100;
+    background: #111111;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 0 24px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+  }
+
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.50);
+    font-family: "Segoe UI", sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 15px 18px 12px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    white-space: nowrap;
+    text-transform: none;
+  }
+
+  .tab-btn:hover {
+    color: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.04);
+  }
+  .tab-btn.active {
+    color: #ffffff;
+    border-bottom-color: var(--sligro-yellow);
+    background: rgba(255,255,255,0.06);
+  }
+
+  /* ─── MAIN ──────────────────────────────── */
+  main { max-width: 1100px; min-height: 100vh; margin: 0 auto; padding: 52px 24px 96px; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-header {
+    margin-bottom: 44px;
+    padding-left: 20px;
+    border-left: 4px solid var(--sligro-green);
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--sligro-green);
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-family: Rockwell, "Rockwell Nova", "Courier Bold", Georgia, serif;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .section-desc {
+    color: var(--text-dim);
+    max-width: 600px;
+    margin-top: 12px;
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  /* ─── FEATURE ROWS (replaces card grid) ─── */
+  .feature-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 48px;
+    border-top: 1px solid var(--border);
+  }
+
+  .feature-row {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 0 28px;
+    padding: 26px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+
+  .feature-row-num {
+    font-family: Rockwell, "Rockwell Nova", Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--sligro-green);
+    line-height: 1;
+    padding-top: 3px;
+    opacity: 0.7;
+  }
+
+  .feature-row-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+    padding-top: 2px;
+  }
+
+  .feature-row h3 {
+    font-family: "Segoe UI", sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 5px;
+  }
+
+  .feature-row p {
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  @media (max-width: 560px) {
+    .feature-row { grid-template-columns: 36px 1fr; gap: 0 16px; }
+  }
+
+  /* ─── CARD GRID ─────────────────────────── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    transition: box-shadow 0.15s;
+  }
+
+  .card:hover {
+    box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+  }
+
+  .card-icon {
+    width: 36px; height: 36px;
+    border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    margin-bottom: 12px;
+    background: var(--surface2);
+  }
+
+  .card h3 {
+    font-family: "Segoe UI", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 6px;
+  }
+
+  .card p {
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    line-height: 1.65;
+  }
+
+  .do-dont-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-bottom: 36px;
+    align-items: start;
+  }
+
+  @media (max-width: 700px) {
+    .do-dont-grid { grid-template-columns: 1fr; }
+    .cards-grid   { grid-template-columns: 1fr; }
+  }
+
+  .do-block, .dont-block {
+    background: var(--surface);
+    border: 1px solid #D8D8D8;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.055);
+  }
+
+  .do-block   { border-top: 5px solid var(--sligro-green); }
+  .dont-block { border-top: 5px solid var(--accent-red); }
+
+  .block-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 22px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E6E6E6;
+  }
+
+  .block-header .icon {
+    width: 30px; height: 30px;
+    border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .do-icon   { background: rgba(0,149,100,0.12); color: var(--sligro-green); }
+  .dont-icon { background: rgba(200,0,30,0.09);  color: var(--accent-red); }
+
+  .block-header h3 {
+    font-family: "Segoe UI", sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--black);
+    line-height: 1.2;
+  }
+
+  .do-list, .dont-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 8px 0;
+  }
+
+  .do-list li, .dont-list li {
+    position: relative;
+    display: block;
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    line-height: 1.58;
+    padding: 12px 22px 12px 56px;
+    min-height: 52px;
+  }
+
+  .do-list li + li, .dont-list li + li {
+    border-top: 1px solid #EDEDED;
+  }
+
+  .do-list li strong, .dont-list li strong {
+    display: block;
+    color: var(--black);
+    font-size: 0.9rem;
+    line-height: 1.35;
+    margin-bottom: 2px;
+  }
+
+  .do-list li::before {
+    content: '✓';
+    color: var(--sligro-green);
+    font-weight: 800;
+    position: absolute;
+    top: 15px;
+    left: 22px;
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0,149,100,0.10);
+  }
+
+  .dont-list li::before {
+    content: '✕';
+    color: var(--accent-red);
+    font-weight: 800;
+    position: absolute;
+    top: 15px;
+    left: 22px;
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(200,0,30,0.08);
+  }
+
+  /* ─── APP TABS ──────────────────────────── */
+  .app-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 26px;
+  }
+
+  .app-tab {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 7px 14px;
+    font-size: 12.5px;
+    font-family: "Segoe UI", sans-serif;
+    font-weight: 600;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .app-tab:hover { color: var(--black); border-color: #aaa; }
+  .app-tab.active {
+    color: #ffffff;
+  }
+
+  .app-panel { display: none; }
+  .app-panel.active { display: block; }
+
+  /* ─── PROMPT BUILDER ────────────────────── */
+  .prompt-builder {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 40px;
+    box-shadow: var(--shadow);
+  }
+
+  .brand-preview {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    background: #f8f8f8;
+  }
+
+  .brand-logo-box {
+    width: 86px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--sligro-green);
+    border-radius: var(--radius);
+    padding: 8px;
+    flex-shrink: 0;
+  }
+
+  .brand-logo-box img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .brand-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .brand-swatch {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 650;
+    color: var(--text-dim);
+  }
+
+  .brand-swatch::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.12);
+    background: var(--swatch);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .brand-options {
+    grid-column: 1 / -1;
+    background: #f8f8f8;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--sligro-green);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+
+  .brand-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 12px;
+  }
+
+  .brand-toggle input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--sligro-green);
+  }
+
+  .pb-header {
+    background: var(--sligro-green);
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .pb-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.35) !important;
+  }
+
+  .pb-body {
+    padding: 22px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+  }
+
+  .pb-field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 5px;
+  }
+
+  .pb-field select, .pb-field input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 9px 12px;
+    color: var(--text);
+    font-family: "Segoe UI", sans-serif;
+    font-size: 13px;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+  }
+
+  .pb-field select:focus, .pb-field input:focus {
+    outline: none;
+    border-color: var(--sligro-green);
+    box-shadow: 0 0 0 2px rgba(0,149,100,0.15);
+  }
+
+  .pb-output-area {
+    border-top: 1px solid var(--border);
+    padding: 18px 22px 22px;
+  }
+
+  .pb-output-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 9px;
+  }
+
+  .pb-output {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--sligro-yellow);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    line-height: 1.7;
+    color: var(--text);
+    min-height: 80px;
+    white-space: pre-wrap;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 13.5px;
+  }
+
+  .pb-output em { color: var(--sligro-green); font-style: normal; font-weight: 700; }
+
+  .pb-step-header {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 3px;
+  }
+  .pb-step-header.step-chat { background: rgba(0,122,184,0.10); color: var(--accent-blue); margin-bottom: 6px; }
+  .pb-step-header.step-word { background: rgba(0,149,100,0.10); color: var(--sligro-green); margin-top: 16px; margin-bottom: 8px; }
+
+  /* ─── MATERIAL ICONS ────────────────────────── */
+  .mi {
+    font-family: 'Material Icons Round';
+    font-style: normal;
+    font-size: 18px;
+    line-height: 1;
+    vertical-align: -4px;
+    display: inline-block;
+    user-select: none;
+    text-transform: none;
+    letter-spacing: normal;
+    word-spacing: normal;
+  }
+  .btn .mi    { font-size: 16px; margin-right: 5px; vertical-align: -3px; }
+  .tab-btn .mi { font-size: 15px; margin-right: 6px; vertical-align: -3px; opacity: .85; }
+  .app-tab .mi { font-size: 16px; vertical-align: -3px; }
+  .qp-btn .mi  { font-size: 14px; margin-right: 4px; vertical-align: -3px; }
+
+  .pb-actions { display: flex; gap: 10px; margin-top: 14px; }
+
+  .qp-btn {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--black);
+    border-radius: var(--radius);
+    padding: 9px 13px;
+    min-height: 36px;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 12.5px;
+    font-weight: 650;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s, transform 0.15s;
+  }
+
+  .qp-btn:hover {
+    border-color: var(--sligro-green);
+    background: #f0faf6;
+    color: var(--sligro-green);
+  }
+
+  .qp-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0,149,100,0.18);
+  }
+
+  .qp-btn.active {
+    background: var(--sligro-green);
+    border-color: var(--sligro-green);
+    color: #ffffff;
+    box-shadow: 0 3px 10px rgba(0,149,100,0.20);
+  }
+
+  .qp-btn:active {
+    transform: translateY(1px);
+  }
+
+  .btn {
+    border: none;
+    border-radius: var(--radius);
+    padding: 9px 22px;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, opacity 0.15s;
+  }
+
+  .btn-primary { background: var(--sligro-green); color: #fff; }
+  .btn-primary:hover { background: var(--sligro-dk); }
+
+  .btn-ghost {
+    background: var(--surface);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { color: var(--black); border-color: #999; }
+
+  /* ─── LIMITATION BOXES ──────────────────── */
+  .limit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    margin-bottom: 40px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .limit-item {
+    background: var(--surface);
+    padding: 20px 22px;
+  }
+
+  .limit-item h4 {
+    font-family: "Segoe UI", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .limit-item h4::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .limit-item.warn h4::before   { background: var(--sligro-yellow); }
+  .limit-item.info h4::before   { background: var(--sligro-green); }
+  .limit-item.danger h4::before { background: var(--accent-red); }
+
+  .limit-item p {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.65;
+    padding-left: 14px;
+  }
+
+  /* ─── PRIVACY TABLE ─────────────────────── */
+  .info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+    font-size: 0.875rem;
+  }
+
+  .info-table th {
+    text-align: left;
+    padding: 11px 16px;
+    background: var(--black);
+    color: #ffffff;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .info-table th:first-child { border-left: 4px solid var(--sligro-yellow); }
+
+  .info-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+    background: var(--surface);
+  }
+
+  .info-table tr:hover td { background: #f9f9f9; }
+
+  .pill {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    font-family: "Segoe UI", sans-serif;
+  }
+
+  .pill.green  { background: rgba(0,149,100,0.10); color: var(--sligro-green); }
+  .pill.red    { background: rgba(200,0,30,0.09);  color: var(--accent-red); }
+  .pill.orange { background: rgba(255,192,52,0.22); color: #8a5c00; }
+  .pill.blue   { background: rgba(0,122,184,0.10); color: var(--accent-blue); }
+
+  /* ─── ACCORDION ─────────────────────────── */
+  .accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 40px;
+  }
+
+  .acc-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .acc-item.open { border-color: var(--sligro-green); }
+
+  .acc-header {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 15px 20px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--text);
+    font-family: "Segoe UI", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+
+  .acc-header:hover { background: var(--surface2); }
+  .acc-item.open .acc-header { color: var(--sligro-green); }
+
+  .acc-arrow { transition: transform 0.3s; color: var(--text-dim); flex-shrink: 0; }
+  .acc-item.open .acc-arrow { transform: rotate(180deg); color: var(--sligro-green); }
+
+  .acc-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+  .acc-item.open .acc-body { max-height: 600px; }
+
+  .acc-inner {
+    padding: 14px 20px 20px;
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    border-top: 1px solid var(--border);
+  }
+
+  .acc-inner strong { color: var(--black); }
+
+  /* ─── CAPABILITY BARS ───────────────────── */
+  .capability-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+
+  .cap-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 40px;
+    gap: 14px;
+    align-items: center;
+  }
+
+  @media (max-width: 560px) {
+    .cap-row { grid-template-columns: 1fr 52px; }
+    .cap-row .cap-label { display: none; }
+  }
+
+  .cap-label { font-size: 0.8rem; color: var(--text-dim); }
+
+  .cap-bar-bg {
+    background: var(--surface2);
+    border-radius: 2px;
+    height: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .cap-bar-fill {
+    height: 100%;
+    width: 0;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .cap-score {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-align: right;
+  }
+
+  /* ─── SOURCE NOTE ───────────────────────── */
+  .source-note {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--sligro-green);
+    border-radius: var(--radius);
+    padding: 13px 18px;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-top: 40px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .source-note strong { color: var(--sligro-green); }
+
+  /* ─── HIGHLIGHT BOX ─────────────────────── */
+  .highlight-box {
+    background: #f0faf6;
+    border: 1px solid rgba(0,149,100,0.20);
+    border-left: 4px solid var(--sligro-green);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin-bottom: 26px;
+  }
+
+  .highlight-box h4 {
+    font-family: "Segoe UI", sans-serif;
+    font-weight: 700;
+    color: var(--sligro-green);
+    font-size: 0.875rem;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .highlight-box p {
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  /* ─── TOAST ─────────────────────────────── */
+  #toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--sligro-green);
+    color: #fff;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s;
+    z-index: 200;
+    pointer-events: none;
+  }
+
+  #toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ─── ANIMATIONS ────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+
+  /* ─── APP PANELS ────────────────────────── */
+  .section.active > * { animation: fadeUp 0.4s ease both; }
+  .section.active > *:nth-child(2) { animation-delay: 0.05s; }
+  .section.active > *:nth-child(3) { animation-delay: 0.10s; }
+  .section.active > *:nth-child(4) { animation-delay: 0.15s; }
+
+  .app-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+
+  @media (max-width: 640px) { .app-info-grid { grid-template-columns: 1fr; } }
+
+  .app-feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .app-feature-list li {
+    display: flex;
+    gap: 9px;
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    align-items: flex-start;
+  }
+
+  .app-feature-list li .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--sligro-yellow);
+    border: 2px solid var(--sligro-green);
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  .app-header-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .app-emoji {
+    width: 48px; height: 48px;
+    background: var(--sligro-green);
+    color: #ffffff;
+    border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .app-title h3 {
+    font-family: Rockwell, "Rockwell Nova", Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--black);
+  }
+
+  .app-title p { font-size: 0.8rem; color: var(--text-dim); }
+
+  .pb-header span {
+    color: rgba(255,255,255,0.92) !important;
+    font-family: "Segoe UI", sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+  }
+
+  /* ─── LLM PIPELINE ──────────────────── */
+  .llm-flow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 36px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .llm-flow-step {
+    flex: 1;
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+  }
+  .llm-flow-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 5px;
+  }
+  .llm-flow-box {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 13px 15px;
+  }
+  .llm-flow-step.fs-input .llm-flow-box  { border-top: 3px solid var(--sligro-green); }
+  .llm-flow-step.fs-ctx   .llm-flow-box  { border-top: 3px solid var(--accent-blue); }
+  .llm-flow-step.fs-model .llm-flow-box  { border-top: 3px solid var(--accent-purple); }
+  .llm-flow-step.fs-out   .llm-flow-box  { border-top: 3px solid var(--sligro-yellow); }
+  .llm-flow-title { font-weight: 700; font-size: 0.875rem; color: var(--black); margin-bottom: 6px; }
+  .llm-flow-sub { font-size: 0.775rem; color: var(--text-dim); line-height: 1.55; }
+  .llm-flow-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+  .llm-flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    padding-top: 22px;
+    font-size: 1.25rem;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+  .llm-pill {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .llm-pill.p-sys  { background: rgba(92,61,143,0.12); color: var(--accent-purple); }
+  .llm-pill.p-hist { background: rgba(0,122,184,0.10); color: var(--accent-blue); }
+  .llm-pill.p-rag  { background: rgba(0,149,100,0.10); color: var(--sligro-green); }
+  .llm-pill.p-user { background: rgba(255,192,52,0.15); color: #8a5c00; }
+  .llm-bar { display: flex; align-items: center; gap: 7px; margin-top: 8px; }
+  .llm-bar-track { flex: 1; height: 5px; border-radius: 2px; overflow: hidden; background: var(--surface2); border: 1px solid var(--border); }
+  .llm-bar-fill { width: 72%; height: 100%; background: linear-gradient(to right, var(--sligro-green), var(--sligro-yellow)); }
+  .llm-bar-lbl { font-size: 9px; font-weight: 700; color: var(--accent-red); letter-spacing: 0.04em; white-space: nowrap; }
+  .llm-temp-bar { margin-top: 10px; display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--text-dim); }
+  .llm-temp-track { flex: 1; height: 4px; border-radius: 2px; background: linear-gradient(to right, #009564, #FFC034, #C8001E); }
+
+  /* ─── FLOW INTERACTIVE ──────────────── */
+  .llm-flow-box { cursor: pointer; transition: border-color 0.18s, box-shadow 0.18s; }
+  .llm-flow-box:hover { border-color: var(--sligro-green); }
+  .llm-flow-step.flow-active .llm-flow-box { border-color: var(--sligro-green); box-shadow: 0 0 0 2px rgba(0,149,100,0.15); }
+  .term-card { transition: box-shadow 0.18s, opacity 0.18s, background 0.18s; }
+  .term-card.term-lit { box-shadow: 0 0 0 2px var(--sligro-green) !important; background: rgba(0,149,100,0.035) !important; }
+  .term-card.term-dim { opacity: 0.2; }
+  /* ─── CONTEXT DEMO ───────────────────── */
+  .ctx-segs { display:flex; height:7px; border-radius:3px; overflow:hidden; margin:8px 0 4px; border:1px solid var(--border); background:var(--surface2); }
+  .ctx-seg { height:100%; transition:width 0.4s ease; }
+  .ctx-seg-sys  { background:rgba(92,61,143,0.55); }
+  .ctx-seg-hist { background:rgba(0,122,184,0.65); }
+  .ctx-seg-rag  { background:rgba(0,149,100,0.65); }
+  .ctx-seg-user { background:rgba(255,192,52,0.85); }
+  .ctx-seg-over { background:#C8001E; transition:width 0.3s ease; }
+  .ctx-meta { display:flex; align-items:center; gap:6px; font-size:9px; color:var(--text-dim); margin-bottom:2px; }
+  .ctx-addbtn { font-size:9px; font-weight:700; padding:2px 6px; border-radius:3px; background:rgba(0,122,184,0.10); border:1px solid rgba(0,122,184,0.25); color:var(--accent-blue); cursor:pointer; white-space:nowrap; margin-left:auto; }
+  .ctx-addbtn:hover:not(:disabled) { background:rgba(0,122,184,0.18); }
+  .ctx-addbtn:disabled { opacity:0.4; cursor:default; }
+  .ctx-warn { font-size:9px; font-weight:600; min-height:12px; line-height:1.4; transition:color 0.2s; }
+  .llm-pill { cursor:pointer; transition:opacity 0.15s; user-select:none; }
+  .llm-pill.pill-off { opacity:0.3; text-decoration:line-through; }
+
+  /* ─── TERM CARDS ─────────────────────── */
+  .term-section { margin-bottom: 30px; }
+  .term-group-hdr {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 11px;
+    padding-bottom: 7px;
+    border-bottom: 1px solid var(--border);
+  }
+  .term-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+    gap: 11px;
+  }
+  .term-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    transition: box-shadow 0.15s;
+  }
+  .term-card:hover { box-shadow: 0 3px 14px rgba(0,0,0,0.07); }
+  .term-name { font-size: 0.9rem; font-weight: 700; color: var(--black); margin-bottom: 1px; }
+  .term-tag { font-size: 10px; font-weight: 600; color: var(--sligro-green); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 7px; }
+  .term-card.tc-blue   .term-tag { color: var(--accent-blue); }
+  .term-card.tc-purple .term-tag { color: var(--accent-purple); }
+  .term-card.tc-amber  .term-tag { color: #8a5c00; }
+  .term-card p { font-size: 0.8rem; color: var(--text-dim); line-height: 1.6; margin: 0; }
+  .term-note {
+    margin-top: 9px;
+    padding: 6px 10px;
+    background: rgba(255,192,52,0.10);
+    border-left: 3px solid var(--sligro-yellow);
+    border-radius: 2px;
+    font-size: 0.775rem;
+    color: #6a4800;
+    line-height: 1.5;
+  }
+
+  /* ─── ROTATING TIPS ─────────────────── */
+  .tips-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 12px 16px;
+    background: rgba(255,192,52,0.07);
+    border: 1px solid rgba(255,192,52,0.20);
+    border-left: 4px solid var(--sligro-yellow);
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+  }
+  .tips-strip-hdr {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #8a5c00;
+    margin-bottom: 2px;
+  }
+  .tip-row {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.55;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .tip-row::before {
+    content: '→';
+    color: var(--sligro-yellow);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ─── SUB-NAV ─────────────────────────────── */
+  .sub-nav-tabs {
+    background: #1c1c1c;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 0 24px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .sub-nav-tabs::-webkit-scrollbar { display: none; }
+
+  .sub-tab-btn {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.45);
+    font-family: "Segoe UI", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 10px 16px 8px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sub-tab-btn:hover { color: rgba(255,255,255,0.75); }
+  .sub-tab-btn.active {
+    color: rgba(255,255,255,0.90);
+    border-bottom-color: rgba(255,255,255,0.30);
+  }
+  .sub-tab-btn .mi { font-size: 14px; vertical-align: -2px; opacity: .80; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    .cap-bar-fill { transition: none !important; }
+    .ctx-seg, .ctx-seg-over { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="grid-lines"></div>
+  <div class="ms-badge">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect width="6.5" height="6.5" fill="#f35325"/><rect x="7.5" width="6.5" height="6.5" fill="#81bc06"/><rect y="7.5" width="6.5" height="6.5" fill="#05a6f0"/><rect x="7.5" y="7.5" width="6.5" height="6.5" fill="#ffba08"/></svg>
+    Microsoft 365 Copilot · Sligro werkgids
+  </div>
+  <h1>Alles over werken met<br><span>Copilot M365</span></h1>
+  <p class="hero-sub">Jouw praktische gids – van eerste stappen tot slimme technieken. Speciaal voor iedereen bij Sligro die meer wil halen uit de tools die je al hebt.</p>
+  <div class="hero-meta">
+    <span>Voor Sligro-collega's</span>
+    <span>Gebaseerd op Microsoft Support</span>
+    <span>Nederlandstalig</span>
+  </div>
+  <div class="scroll-hint">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M4 10l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Scroll verder
+  </div>
+</section>
+
+<!-- NAV -->
+<nav class="nav-tabs" id="navTabs" role="tablist" aria-label="Secties">
+  <button class="tab-btn active" role="tab" aria-selected="true"  aria-controls="intro"         onclick="showSection('intro',this)"><span class="mi">home</span>General</button>
+  <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="ai-copilot"    onclick="showSection('ai-copilot',this)"><span class="mi">smart_toy</span>AI / Copilot</button>
+  <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="copilot-sligro" onclick="showSection('copilot-sligro',this)"><span class="mi">storefront</span>Copilot in Sligro</button>
+  <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="prompts"       onclick="showSection('prompts',this)"><span class="mi">edit_note</span>Prompt builder</button>
+  <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="agent-builder" onclick="showSection('agent-builder',this)"><span class="mi">precision_manufacturing</span>Agent builder</button>
+  <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="workflows"     onclick="showSection('workflows',this)"><span class="mi">account_tree</span>Workflows</button>
+  <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="faq"           onclick="showSection('faq',this)"><span class="mi">help</span>FAQ</button>
+</nav>
+<nav class="sub-nav-tabs" id="subNavTabs" style="display:none;"></nav>
+
+<main>
+
+<!-- ═══════════════════════════════════════════
+     SECTIE 1: INTRODUCTIE
+     ═══════════════════════════════════════════ -->
+<section class="section active" id="intro">
+  <div class="section-header">
+    <div class="section-label">Welkom</div>
+    <h2 class="section-title">Copilot is er.<br>Nu ben jij aan de beurt.</h2>
+    <p class="section-desc">Je hebt hem al. Copilot zit in de apps die je elke dag gebruikt. Deze gids laat je zien hoe je hem echt voor je laat werken.</p>
+  </div>
+  <div id="tipsStrip-intro"></div>
+
+  <div class="highlight-box">
+    <h4>Wat doet Copilot precies?</h4>
+    <p>Denk aan een collega die altijd beschikbaar is, nooit moe wordt en elke vraag begrijpt. Dat is Copilot – niet als vervanging van jouw oordeel, maar als versterking ervan. Jij geeft richting, Copilot werkt het uit. Jij controleert, past aan en beslist wat je gebruikt.</p>
+  </div>
+
+  <div class="feature-rows">
+    <div class="feature-row">
+      <div class="feature-row-icon">✍️</div>
+      <div><h3>Schrijven zonder blanco pagina</h3><p>Eerste versie van een mail, memo, samenvatting of bericht? Copilot helpt je starten. Jij maakt het daarna passend, voor Sligro, voor de ontvanger, voor jouw toon.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-icon">📚</div>
+      <div><h3>Snel de kern pakken</h3><p>Lange mailwisseling, dik rapport of druk bezette chat? Vraag om de hoofdlijnen, openstaande acties of de verschillen tussen twee versies. Bijlezen in een minuut.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-icon">🗂️</div>
+      <div><h3>Chaos omzetten naar structuur</h3><p>Ruwe notities, losse ideeën, een volle inbox – Copilot helpt je alles omzetten naar een heldere structuur, een takenlijst of een planning waar je direct mee verder kunt.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-icon">💬</div>
+      <div><h3>Beter voorbereid elk overleg in</h3><p>Bereid je voor met de juiste vragen, een korte briefing of een samenvatting van wat er al is afgesproken. Je stapt scherper het gesprek in.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-icon">📊</div>
+      <div><h3>Patronen zien die jij mist</h3><p>Vraag Copilot om opvallende punten, trends of logische vervolgstappen te benoemen in tabellen, rapportages of lijsten. Soms zie je daarna dingen die je anders over het hoofd had gezien.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-icon">✅</div>
+      <div><h3>Jij blijft altijd aan het stuur</h3><p>Copilot versnelt – maar jij beslist. Check altijd of de output klopt, de toon past en de inhoud geschikt is voor de ontvanger. De eindverantwoordelijkheid ligt bij jou, en dat is precies zoals het hoort.</p></div>
+    </div>
+  </div>
+
+  <div class="source-note">
+    <span>📖</span>
+    <div><strong>Gebaseerd op:</strong> Microsoft Support — <em>Write a great prompt in Microsoft 365 Copilot</em>, <em>Get started writing prompts in Microsoft 365 Copilot</em> en <em>What information does Copilot use to answer my prompt?</em></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTIE 2: DO'S & DON'TS
+     ═══════════════════════════════════════════ -->
+<section class="section" id="dos-donts">
+  <div class="section-header">
+    <div class="section-label">Zo doe je het</div>
+    <h2 class="section-title">De kunst van een goede vraag</h2>
+    <p class="section-desc">Hoe concreter jij bent, hoe beter Copilot helpt. Goede input levert goede output, en met een paar gewoontes kom je al heel ver.</p>
+  </div>
+
+  <div class="do-dont-grid">
+    <div class="do-block">
+      <div class="block-header">
+        <div class="icon do-icon"><span class="mi" style="font-size:14px;vertical-align:-2px;">check</span></div>
+        <h3>Zo werkt het het best</h3>
+      </div>
+      <ul class="do-list">
+        <li><strong>Wees specifiek.</strong> Vertel wat je wilt, voor wie, in welke toon en hoe lang. Hoe meer detail, hoe beter het resultaat.</li>
+        <li><strong>Geef context mee.</strong> Verwijs naar de mail, het bestand, het overleg. Copilot werkt met wat jij aanlevert.</li>
+        <li><strong>Zet je bron achteraan.</strong> Copilot weegt de laatste regels van je prompt het zwaarst. Verwijs daar naar de juiste informatie.</li>
+        <li><strong>Verfijn gerust.</strong> Het hoeft niet perfect in één keer. Vraag om een kortere versie, een andere toon, of een concreter voorstel.</li>
+        <li><strong>Check altijd.</strong> Feiten, namen, bedragen, deadlines – lees na voordat je iets deelt of verstuurt.</li>
+        <li><strong>Eén gesprek, één onderwerp.</strong> Wissel je van taak? Start een nieuw gesprek. Dat houdt de context helder.</li>
+        <li><strong>Gebruik het breed.</strong> Niet alleen voor schrijven – ook voor brainstormen, vergelijken, structureren en voorbereiden.</li>
+        <li><strong>Geef feedback.</strong> Duim omhoog of omlaag helpt Copilot leren wat voor jou werkt.</li>
+      </ul>
+    </div>
+    <div class="dont-block">
+      <div class="block-header">
+        <div class="icon dont-icon"><span class="mi" style="font-size:14px;vertical-align:-2px;">close</span></div>
+        <h3>Houd dit in de gaten</h3>
+      </div>
+      <ul class="dont-list">
+        <li><strong>Lees altijd na voordat je deelt.</strong> Copilot kan iets verkeerd begrijpen, weglaten of te zelfverzekerd formuleren.</li>
+        <li><strong>Minder is meer met gevoelige informatie.</strong> Geef alleen wat nodig is voor de taak. Geen wachtwoorden, BSN's of privégegevens in een prompt.</li>
+        <li><strong>Het is een hulpmiddel, geen beslisser.</strong> Copilot geeft een richting; de uiteindelijke keuze maak jij, samen met de juiste collega's.</li>
+        <li><strong>Wissel niet van onderwerp in hetzelfde gesprek.</strong> Dan raakt de context verward en worden antwoorden minder precies.</li>
+        <li><strong>Neem actualiteit niet als vanzelfsprekend aan.</strong> Copilot heeft geen live toegang tot systemen of nieuws. Verwijs zelf naar actuele bestanden.</li>
+        <li><strong>Maak het altijd eigen.</strong> Een Copilot-tekst is een vertrekpunt. Jij maakt het passend bij Sligro, jouw stijl en de ontvanger.</li>
+        <li><strong>Vraag om de onderbouwing.</strong> Klinkt een analyse slim maar vaag? Vraag: "Waar baseert Copilot dit op?" Dat geeft je grip.</li>
+        <li><strong>Nooit blind kopiëren.</strong> Altijd een eigen leesronde. Altijd.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class=”highlight-box”>
+    <h4>De gouden formule: C · R · T · F</h4>
+    <p>De beste prompts zijn opgebouwd uit vier bouwstenen: <strong>Context</strong> (wat is de situatie en het doel?), <strong>Rol</strong> (vanuit welk perspectief moet Copilot denken?), <strong>Taak</strong> (één werkwoord, één concreet resultaat) en <strong>Format</strong> (tabel, bullets, samenvatting, maximaal X woorden). Hoe meer je invult, hoe gerichter het antwoord. Wil je dit automatisch samenstellen? Gebruik de Prompt builder.</p>
+  </div>
+
+  <div class="source-note">
+    <span>📖</span>
+    <div><strong>Gebaseerd op:</strong> Microsoft Support — <em>Write a great prompt in Microsoft 365 Copilot</em> en <em>Get started writing prompts in Microsoft 365 Copilot</em></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTIE 3: PER APP
+     ═══════════════════════════════════════════ -->
+<section class="section" id="apps">
+  <div class="section-header">
+    <div class="section-label">Per app</div>
+    <h2 class="section-title">Copilot zit overal.<br>Zo gebruik je het slim.</h2>
+    <p class="section-desc">In welke app werk jij? Kies hem hieronder en ontdek wat Copilot concreet voor je doet, inclusief de werkafspraken die het verschil maken.</p>
+  </div>
+  <div id="tipsStrip-apps"></div>
+
+  <div class="app-tabs" id="appTabs" role="tablist" aria-label="Applicaties">
+    <button class="app-tab active" role="tab" aria-selected="true"  aria-controls="app-word"         data-color="#2B579A" onclick="showApp('word',this)" style="background:#2B579A;border-color:#2B579A;color:#fff;"><span class="mi">description</span>Word</button>
+    <button class="app-tab"        role="tab" aria-selected="false" aria-controls="app-excel"        data-color="#217346" onclick="showApp('excel',this)"><span class="mi">table_chart</span>Excel</button>
+    <button class="app-tab"        role="tab" aria-selected="false" aria-controls="app-powerpoint"   data-color="#D24726" onclick="showApp('powerpoint',this)"><span class="mi">slideshow</span>PowerPoint</button>
+    <button class="app-tab"        role="tab" aria-selected="false" aria-controls="app-outlook"      data-color="#0078D4" onclick="showApp('outlook',this)"><span class="mi">mail</span>Outlook</button>
+    <button class="app-tab"        role="tab" aria-selected="false" aria-controls="app-teams"        data-color="#6264A7" onclick="showApp('teams',this)"><span class="mi">groups</span>Teams</button>
+    <button class="app-tab"        role="tab" aria-selected="false" aria-controls="app-copilot-chat" data-color="#6B53AE" onclick="showApp('copilot-chat',this)"><span class="mi">chat</span>Copilot Chat</button>
+  </div>
+
+  <div class="app-panel active" id="app-word">
+    <div class="app-header-row"><div class="app-emoji" style="background:#2B579A;">W</div><div class="app-title"><h3>Word</h3><p>Nooit meer staren naar een leeg document</p></div></div>
+    <div class="app-info-grid">
+      <div class="card blue"><h3 style="font-size:.85rem; margin-bottom:10px;">Gebruik Copilot voor</h3><ul class="app-feature-list"><li><span class="dot"></span>Een eerste opzet van een memo, handleiding, verslag of tekst</li><li><span class="dot"></span>Een lange tekst samenvatten voor collega&apos;s of leidinggevenden</li><li><span class="dot"></span>Tekst korter, duidelijker of vriendelijker maken</li><li><span class="dot"></span>Losse notities omzetten naar een nette structuur</li></ul></div>
+      <div class="card green"><h3 style="font-size:.85rem; margin-bottom:10px;">Werkafspraak</h3><ul class="app-feature-list"><li><span class="dot" style="background:var(--sligro-green)"></span>Controleer inhoud, toon en feiten voordat je het document deelt</li><li><span class="dot" style="background:var(--sligro-green)"></span>Vraag om alternatieven als de eerste versie nog niet past</li><li><span class="dot" style="background:var(--sligro-green)"></span>Maak de tekst altijd eigen en passend bij Sligro</li></ul></div>
+    </div>
+  </div>
+
+  <div class="app-panel" id="app-excel">
+    <div class="app-header-row"><div class="app-emoji" style="background:#217346;">X</div><div class="app-title"><h3>Excel</h3><p>Wat zit er eigenlijk in die data van jou?</p></div></div>
+    <div class="app-info-grid">
+      <div class="card blue"><h3 style="font-size:.85rem; margin-bottom:10px;">Gebruik Copilot voor</h3><ul class="app-feature-list"><li><span class="dot"></span>Trends, uitschieters en verschillen laten benoemen</li><li><span class="dot"></span>Een tabel samenvatten in gewone taal</li><li><span class="dot"></span>Ideeen krijgen voor grafieken of draaitabellen</li><li><span class="dot"></span>Formules laten uitleggen of helpen opbouwen</li></ul></div>
+      <div class="card green"><h3 style="font-size:.85rem; margin-bottom:10px;">Werkafspraak</h3><ul class="app-feature-list"><li><span class="dot" style="background:var(--sligro-green)"></span>Gebruik duidelijke kolomnamen en nette tabellen</li><li><span class="dot" style="background:var(--sligro-green)"></span>Controleer berekeningen voordat je conclusies deelt</li><li><span class="dot" style="background:var(--sligro-green)"></span>Laat gevoelige gegevens weg als ze niet nodig zijn</li></ul></div>
+    </div>
+  </div>
+
+  <div class="app-panel" id="app-powerpoint">
+    <div class="app-header-row"><div class="app-emoji" style="background:#D24726;">P</div><div class="app-title"><h3>PowerPoint</h3><p>Van een berg informatie naar een scherp verhaal</p></div></div>
+    <div class="app-info-grid">
+      <div class="card blue"><h3 style="font-size:.85rem; margin-bottom:10px;">Gebruik Copilot voor</h3><ul class="app-feature-list"><li><span class="dot"></span>Een presentatie-opzet maken vanuit een document of briefing</li><li><span class="dot"></span>Kernboodschappen aanscherpen per slide</li><li><span class="dot"></span>Sprekernotities maken voor je verhaal</li><li><span class="dot"></span>Een lange presentatie samenvatten</li></ul></div>
+      <div class="card green"><h3 style="font-size:.85rem; margin-bottom:10px;">Werkafspraak</h3><ul class="app-feature-list"><li><span class="dot" style="background:var(--sligro-green)"></span>Controleer of de presentatie past bij de doelgroep</li><li><span class="dot" style="background:var(--sligro-green)"></span>Gebruik Sligro-huisstijl en eigen voorbeelden waar nodig</li><li><span class="dot" style="background:var(--sligro-green)"></span>Maak de laatste versie zelf visueel rustig en scherp</li></ul></div>
+    </div>
+  </div>
+
+  <div class="app-panel" id="app-outlook">
+    <div class="app-header-row"><div class="app-emoji" style="background:#0078D4;">O</div><div class="app-title"><h3>Outlook</h3><p>Minder tijd in je inbox, meer grip op wat telt</p></div></div>
+    <div class="app-info-grid">
+      <div class="card blue"><h3 style="font-size:.85rem; margin-bottom:10px;">Gebruik Copilot voor</h3><ul class="app-feature-list"><li><span class="dot"></span>Lange mailwisselingen samenvatten</li><li><span class="dot"></span>Een professioneel antwoord opstellen</li><li><span class="dot"></span>De toon vriendelijker, korter of duidelijker maken</li><li><span class="dot"></span>Voorbereiden wat je uit een overleg of afspraak nodig hebt</li></ul></div>
+      <div class="card green"><h3 style="font-size:.85rem; margin-bottom:10px;">Werkafspraak</h3><ul class="app-feature-list"><li><span class="dot" style="background:var(--sligro-green)"></span>Lees altijd de volledige mail voordat je verstuurt</li><li><span class="dot" style="background:var(--sligro-green)"></span>Controleer namen, afspraken, data en bijlagen</li><li><span class="dot" style="background:var(--sligro-green)"></span>Laat gevoelige informatie alleen staan als die echt nodig is</li></ul></div>
+    </div>
+  </div>
+
+  <div class="app-panel" id="app-teams">
+    <div class="app-header-row"><div class="app-emoji" style="background:#6264A7;">T</div><div class="app-title"><h3>Teams</h3><p>Gemist? In vijf seconden weer bij.</p></div></div>
+    <div class="app-info-grid">
+      <div class="card blue"><h3 style="font-size:.85rem; margin-bottom:10px;">Gebruik Copilot voor</h3><ul class="app-feature-list"><li><span class="dot"></span>Een overleg samenvatten met besluiten en acties</li><li><span class="dot"></span>Gemiste chatberichten snel bijlezen</li><li><span class="dot"></span>Vragen stellen over wat besproken is</li><li><span class="dot"></span>Een vervolgagenda of actielijst maken</li></ul></div>
+      <div class="card green"><h3 style="font-size:.85rem; margin-bottom:10px;">Werkafspraak</h3><ul class="app-feature-list"><li><span class="dot" style="background:var(--sligro-green)"></span>Controleer actiepunten met de betrokken collega&apos;s</li><li><span class="dot" style="background:var(--sligro-green)"></span>Gebruik samenvattingen als hulpmiddel, niet als officieel verslag zonder check</li><li><span class="dot" style="background:var(--sligro-green)"></span>Wees duidelijk richting deelnemers als transcriptie of opname wordt gebruikt</li></ul></div>
+    </div>
+  </div>
+
+  <div class="app-panel" id="app-copilot-chat">
+    <div class="app-header-row"><div class="app-emoji" style="background:#6B53AE;">C</div><div class="app-title"><h3>Copilot Chat</h3><p>Jouw slimste startpunt voor bijna alles</p></div></div>
+    <div class="app-info-grid">
+      <div class="card blue"><h3 style="font-size:.85rem; margin-bottom:10px;">Gebruik Copilot voor</h3><ul class="app-feature-list"><li><span class="dot"></span>Een snelle start van je dag: prioriteiten, acties en voorbereiding</li><li><span class="dot"></span>Vragen over documenten, mails of vergaderingen waar jij toegang toe hebt</li><li><span class="dot"></span>Brainstormen, vergelijken, samenvatten en herschrijven</li><li><span class="dot"></span>Een eerste versie maken die je daarna in Word, Outlook of PowerPoint uitwerkt</li></ul></div>
+      <div class="card green"><h3 style="font-size:.85rem; margin-bottom:10px;">Werkafspraak</h3><ul class="app-feature-list"><li><span class="dot" style="background:var(--sligro-green)"></span>Begin met een duidelijk doel</li><li><span class="dot" style="background:var(--sligro-green)"></span>Verwijs naar de juiste bron als Copilot een document moet gebruiken</li><li><span class="dot" style="background:var(--sligro-green)"></span>Start een nieuw gesprek als je naar een ander onderwerp gaat</li></ul></div>
+    </div>
+  </div>
+
+  <div class="source-note"><span>📖</span><div><strong>Gebaseerd op:</strong> Microsoft Support - Copilot in Microsoft 365-apps en de Microsoft 365 Copilot-app.</div></div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTIE 4: PROMPT BUILDER
+     ═══════════════════════════════════════════ -->
+<section class="section" id="prompts">
+  <div class="section-header">
+    <div class="section-label">Zelf proberen</div>
+    <h2 class="section-title">Prompt-bouwer</h2>
+    <p class="section-desc">Elke goede Copilot-prompt is opgebouwd uit vier bouwstenen. Samen zorgen ze dat Copilot precies begrijpt wat jij wilt.</p>
+  </div>
+  <div id="tipsStrip-prompts"></div>
+
+  <div style="background:#fff; border:1px solid #dedede; border-top:3px solid #009564; border-radius:4px; margin-bottom:28px; overflow:hidden;">
+    <button onclick="toggleCRTF()" style="width:100%; background:none; border:none; cursor:pointer; padding:20px 28px 16px; display:flex; align-items:center; justify-content:space-between; text-align:left;">
+      <div>
+        <div style="font-size:10px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#6e6e6e; margin-bottom:4px;">Het ritueel &middot; vier bouwstenen voor elke prompt</div>
+        <div style="font-size:2.4rem; font-weight:900; letter-spacing:0.06em; color:#1a1a1a; line-height:1; font-family:'Segoe UI',sans-serif;">C &middot; R &middot; T &middot; F</div>
+      </div>
+      <span class="mi" id="crtfArrow" style="font-size:22px; color:#6e6e6e; flex-shrink:0; margin-left:16px;">expand_more</span>
+    </button>
+    <div id="crtfGrid" style="display:none; grid-template-columns:repeat(4,1fr); gap:0; border-top:1px solid #dedede;">
+
+      <div style="padding:22px 20px 24px; border-right:1px solid #dedede;">
+        <div style="font-size:3.8rem; font-weight:900; color:#009564; line-height:1; margin-bottom:16px; font-family:'Segoe UI',sans-serif;">C</div>
+        <div style="font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#6e6e6e; margin-bottom:6px; display:flex; align-items:center; gap:4px;"><span class="mi" style="font-size:13px; vertical-align:0; margin-right:0;">hub</span>Bouwsteen 1</div>
+        <div style="font-size:0.95rem; font-weight:700; color:#1a1a1a; margin-bottom:8px;">Context</div>
+        <div style="font-size:0.8rem; color:#4a4a4a; line-height:1.6; margin-bottom:14px;">Waaraan werk je, voor wie en wat is het doel? Zonder context vult Copilot zelf in — meestal generiek.</div>
+        <div style="border-left:3px solid #FFC034; padding:8px 12px; background:#f4f4f4; font-size:0.78rem; color:#6e6e6e; font-style:italic; line-height:1.55;">"Interne update voor accountmanagers bij Sligro over een nieuwe werkwijze."</div>
+      </div>
+
+      <div style="padding:22px 20px 24px; border-right:1px solid #dedede;">
+        <div style="font-size:3.8rem; font-weight:900; color:#009564; line-height:1; margin-bottom:16px; font-family:'Segoe UI',sans-serif;">R</div>
+        <div style="font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#6e6e6e; margin-bottom:6px; display:flex; align-items:center; gap:4px;"><span class="mi" style="font-size:13px; vertical-align:0; margin-right:0;">manage_accounts</span>Bouwsteen 2</div>
+        <div style="font-size:0.95rem; font-weight:700; color:#1a1a1a; margin-bottom:8px;">Rol</div>
+        <div style="font-size:0.8rem; color:#4a4a4a; line-height:1.6; margin-bottom:14px;">Een bruikbaar perspectief stuurt stijl, kennis en invalshoek tegelijk. Kies een hoed die past.</div>
+        <div style="border-left:3px solid #FFC034; padding:8px 12px; background:#f4f4f4; font-size:0.78rem; color:#6e6e6e; font-style:italic; line-height:1.55;">"Denk mee als ervaren category manager."</div>
+      </div>
+
+      <div style="padding:22px 20px 24px; border-right:1px solid #dedede;">
+        <div style="font-size:3.8rem; font-weight:900; color:#009564; line-height:1; margin-bottom:16px; font-family:'Segoe UI',sans-serif;">T</div>
+        <div style="font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#6e6e6e; margin-bottom:6px; display:flex; align-items:center; gap:4px;"><span class="mi" style="font-size:13px; vertical-align:0; margin-right:0;">flag</span>Bouwsteen 3</div>
+        <div style="font-size:0.95rem; font-weight:700; color:#1a1a1a; margin-bottom:8px;">Taak</div>
+        <div style="font-size:0.8rem; color:#4a4a4a; line-height:1.6; margin-bottom:14px;">Één werkwoord, één concreet resultaat. Hoe specifieker, hoe kleiner de kans op een te breed antwoord.</div>
+        <div style="border-left:3px solid #FFC034; padding:8px 12px; background:#f4f4f4; font-size:0.78rem; color:#6e6e6e; font-style:italic; line-height:1.55;">"Geef drie actie-ideeën voor het terras-assortiment, gericht op horeca."</div>
+      </div>
+
+      <div style="padding:22px 20px 24px;">
+        <div style="font-size:3.8rem; font-weight:900; color:#009564; line-height:1; margin-bottom:16px; font-family:'Segoe UI',sans-serif;">F</div>
+        <div style="font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#6e6e6e; margin-bottom:6px; display:flex; align-items:center; gap:4px;"><span class="mi" style="font-size:13px; vertical-align:0; margin-right:0;">format_list_bulleted</span>Bouwsteen 4</div>
+        <div style="font-size:0.95rem; font-weight:700; color:#1a1a1a; margin-bottom:8px;">Format</div>
+        <div style="font-size:0.8rem; color:#4a4a4a; line-height:1.6; margin-bottom:14px;">Hoe wil je de output ontvangen? E-mail, bullets, tabel, max X woorden. Direct bruikbaar i.p.v. herschrijven.</div>
+        <div style="border-left:3px solid #FFC034; padding:8px 12px; background:#f4f4f4; font-size:0.78rem; color:#6e6e6e; font-style:italic; line-height:1.55;">"Als tabel met doelgroep, kernboodschap en één verkoopargument per idee."</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="margin-bottom:28px;">
+    <div style="font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-dim); margin-bottom:12px;">Snel starten</div>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;" id="quickPrompts">
+      <button class="qp-btn" onclick="loadQuick(0)"><span class="mi" style="color:#0078D4">calendar_month</span>Agenda deze week</button>
+      <button class="qp-btn" onclick="loadQuick(1)"><span class="mi" style="color:#0078D4">mail</span>E-mails beantwoorden</button>
+      <button class="qp-btn" onclick="loadQuick(2)"><span class="mi" style="color:#6264A7">summarize</span>Vergadering samenvatten</button>
+      <button class="qp-btn" onclick="loadQuick(3)"><span class="mi" style="color:#009564">task_alt</span>Takenlijst uit e-mails</button>
+      <button class="qp-btn" onclick="loadQuick(4)"><span class="mi" style="color:#0078D4">reply</span>E-mail opstellen</button>
+      <button class="qp-btn" onclick="loadQuick(17)"><span class="mi" style="color:#6264A7">event</span>Afspraak plannen</button>
+      <div style="width:100%; height:12px;"></div>
+      <button class="qp-btn" onclick="loadQuick(5)"><span class="mi" style="color:#217346">bar_chart</span>Excel-inzichten</button>
+      <button class="qp-btn" onclick="loadQuick(6)"><span class="mi" style="color:#D24726">slideshow</span>Presentatie maken</button>
+      <button class="qp-btn" onclick="loadQuick(7)"><span class="mi" style="color:#E07B00">folder_open</span>Projectstatus</button>
+      <button class="qp-btn" onclick="loadQuick(8)"><span class="mi" style="color:#6B53AE">manage_search</span>Onderwerp onderzoeken</button>
+      <div style="width:100%; height:12px;"></div>
+      <button class="qp-btn" onclick="loadQuick(9)"><span class="mi" style="color:#009564">handshake</span>Klantbezoek voorbereiden</button>
+      <button class="qp-btn" onclick="loadQuick(10)"><span class="mi" style="color:#C49000">campaign</span>Seizoensaanbod communiceren</button>
+      <button class="qp-btn" onclick="loadQuick(11)"><span class="mi" style="color:#E07B00">checklist</span>Werkinstructie schrijven</button>
+      <button class="qp-btn" onclick="loadQuick(12)"><span class="mi" style="color:#217346">query_stats</span>KPI-rapportage samenvatten</button>
+      <div style="width:100%; height:12px;"></div>
+      <button class="qp-btn" onclick="loadQuick(13)"><span class="mi" style="color:#007AB8">edit_note</span>Productomschrijving schrijven</button>
+      <button class="qp-btn" onclick="loadQuick(14)"><span class="mi" style="color:#E07B00">tune</span>Webpaginatekst verbeteren</button>
+      <button class="qp-btn" onclick="loadQuick(15)"><span class="mi" style="color:#007AB8">science</span>A/B-test hypothese opstellen</button>
+      <button class="qp-btn" onclick="loadQuick(16)"><span class="mi" style="color:#009564">travel_explore</span>SEO-tekst optimaliseren</button>
+    </div>
+  </div>
+
+  <div class="prompt-builder">
+    <div class="pb-header"><div class="pb-dot"></div><div class="pb-dot"></div><div class="pb-dot"></div><span style="margin-left:8px; font-weight:600; font-size:12px;">Copilot Prompt Builder</span></div>
+    <div class="pb-body" style="grid-template-columns: 1fr 1fr; gap:16px;">
+      <div class="pb-field" style="grid-column:1/-1;"><label style="color:var(--sligro-green);">Context <span style="font-weight:400; text-transform:none; letter-spacing:0;">Achtergrond van de situatie</span></label><textarea id="pbContext" rows="2" placeholder="Bijv: We bereiden een teamoverleg voor en willen de belangrijkste punten uit de mails van deze week." style="width:100%; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:9px 12px; color:var(--text); font-family:'Segoe UI',sans-serif; font-size:13px; resize:vertical; transition:border-color 0.15s;" onfocus="this.style.borderColor='var(--sligro-green)'" onblur="this.style.borderColor='var(--border)'"></textarea></div>
+      <div class="pb-field"><label style="color:#8a5c00;">Rol <span style="font-weight:400; text-transform:none; letter-spacing:0;">Optioneel perspectief</span></label><select id="pbRole"><option value="">Geen specifieke rol</option><option value="Jij bent een ervaren communicatiespecialist.">Communicatiespecialist</option><option value="Jij bent een HR-adviseur.">HR-adviseur</option><option value="Jij bent een financieel analist.">Financieel analist</option><option value="Jij bent een projectmanager.">Projectmanager</option><option value="Jij bent een marketingstrateeg.">Marketingstrateeg</option><option value="Jij bent een procesverbeteraar.">Procesverbeteraar</option><option value="Jij bent een salesmanager.">Salesmanager</option><option value="Jij bent een business analyst.">Business analyst</option></select></div>
+      <div class="pb-field"><label style="color:var(--accent-blue);">Taak <span style="font-weight:400; text-transform:none; letter-spacing:0;">Wat moet Copilot doen?</span></label><select id="pbTask"><option value="Schrijf">Schrijven / opstellen</option><option value="Vat samen" selected>Samenvatten</option><option value="Analyseer">Analyseren</option><option value="Maak een overzicht van">Overzicht maken</option><option value="Herschrijf">Herschrijven</option><option value="Maak een plan voor">Plannen / brainstormen</option><option value="Beantwoord">Beantwoorden</option><option value="Vertaal naar het Engels">Vertalen naar Engels</option><option value="Zet om in actiepunten">Omzetten in actiepunten</option><option value="Vergelijk">Vergelijken</option></select></div>
+      <div class="pb-field"><label style="color:var(--accent-blue);">Onderwerp</label><input type="text" id="pbSubject" placeholder="bijv. mailwisseling over project X, kwartaalrapportage, overlegnotities"></div>
+      <div class="pb-field"><label style="color:var(--accent-blue);">Doelgroep</label><select id="pbAudience"><option value="">Geen specifieke doelgroep</option><option value="voor het managementteam">Managementteam</option><option value="voor klanten">Klanten</option><option value="voor collega's">Collega's</option><option value="voor mijn team">Mijn team</option><option value="voor nieuwe medewerkers">Nieuwe medewerkers</option></select></div>
+      <div class="pb-field"><label style="color:var(--accent-purple);">Vorm <span style="font-weight:400; text-transform:none; letter-spacing:0;">Structuur van de output</span></label><select id="pbFormat"><option value="Gebruik bullet points.">Bullet points</option><option value="Schrijf als lopende tekst.">Lopende tekst</option><option value="Gebruik genummerde stappen.">Genummerde stappen</option><option value="Zet het in een tabel.">Tabel</option><option value="Maximaal 150 woorden.">Maximaal 150 woorden</option><option value="Maximaal 3 alinea's.">Maximaal 3 alinea's</option><option value="Gebruik een korte samenvatting gevolgd door actiepunten." selected>Samenvatting + actiepunten</option></select></div>
+      <div class="pb-field"><label style="color:var(--accent-purple);">Toon</label><select id="pbTone"><option value="professioneel en helder">Professioneel en helder</option><option value="vriendelijk en toegankelijk">Vriendelijk en toegankelijk</option><option value="bondig en to-the-point">Bondig en to-the-point</option><option value="zorgvuldig en feitelijk">Zorgvuldig en feitelijk</option><option value="overtuigend">Overtuigend</option></select></div>
+      <div class="pb-field" style="grid-column:1/-1;"><label style="color:var(--accent-red);">Bron <span style="font-weight:400; text-transform:none; letter-spacing:0;">Bestand, e-mail of vergadering (optioneel)</span></label><input type="text" id="pbSource" placeholder="bijv. de geselecteerde mail, het geopende document, vergadering van gisteren"></div>
+
+      <div class="pb-field" style="grid-column:1/-1;"><label style="color:var(--black);">Uitvoer <span style="font-weight:400; text-transform:none; letter-spacing:0;">Wat moet Copilot aanmaken?</span></label><select id="pbOutputType"><option value="">Copilot Chat (geen bestand)</option><option value="een nieuw Word-document (.docx)">Word-document (.docx)</option><option value="een nieuwe Excel-werkmap (.xlsx)">Excel-werkmap (.xlsx)</option><option value="een nieuwe PowerPoint-presentatie (.pptx)">PowerPoint-presentatie (.pptx)</option><option value="een managementsamenvatting">Managementsamenvatting (in chat)</option><option value="een one-page briefing">One-page briefing (in chat)</option><option value="een tabel of rapportage">Tabel of rapportage (in chat)</option><option value="een instructie of handleiding">Instructie of handleiding (in chat)</option><option value="een gestructureerde PowerPoint-slide als basis voor een infographic">Infographic (via PowerPoint)</option></select></div>
+
+      <div class="brand-options">
+        <label class="brand-toggle"><input type="checkbox" id="pbUseBrand" onchange="toggleBrandOptions()"> Sligro-huisstijl toepassen</label>
+        <div id="brandInlineOptions" style="display:none;">
+          <div class="brand-preview" style="padding:0 0 14px; border-bottom:none; background:transparent;">
+            <div class="brand-logo-box"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+Cjxzdmcgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDcxIDM5IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHhtbG5zOnNlcmlmPSJodHRwOi8vd3d3LnNlcmlmLmNvbS8iIHN0eWxlPSJmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtzdHJva2UtbGluZWpvaW46cm91bmQ7c3Ryb2tlLW1pdGVybGltaXQ6MjsiPgogICAgPHBhdGggZD0iTTM1LjEsMzguNEM1NC41LDM4LjQgNzAuMiwyOS44IDcwLjIsMTkuM0M3MC4xLDguNiA1NC40LDAuMSAzNS4xLDAuMUMxNS43LDAuMSAwLDguNiAwLDE5LjJDMCwyOS44IDE1LjcsMzguNCAzNS4xLDM4LjRaIiBzdHlsZT0iZmlsbDp3aGl0ZTsiLz4KICAgIDxwYXRoIGQ9Ik0zNS4zLDM2LjRDNTMuOSwzNi40IDY5LDI4LjIgNjksMTguMkM2OS4xLDguMSA1My45LDAgMzUuMywwQzE2LjcsMCAxLjYsOC4xIDEuNiwxOC4yQzEuNiwyOC4zIDE2LjcsMzYuNCAzNS4zLDM2LjRaIiBzdHlsZT0iZmlsbDpyZ2IoMCw3Myw0OSk7Ii8+CiAgICA8cGF0aCBkPSJNMzEsMjMuOEMyOS44LDIzLjMgMjkuOCwyMy4xIDI5LjgsMjIuNUMyOS44LDIyLjMgMjkuOCwyMS45IDMwLjIsMTkuNkMzMC41LDE4LjIgMzAuOCwxNS45IDMxLjMsMTQuMkMzMS4zLDE0IDMxLjIsMTQuMSAzMS4yLDE0LjFMMjUuOSwxNC4xQzI1LjgsMTQuMSAyNS44LDE0LjIgMjUuOCwxNC4yQzI1LjgsMTQuMiAyNS44LDE0LjMgMjUuOSwxNC40TDI2LjUsMTQuNkMyNy4yLDE0LjkgMjcuMywxNS40IDI3LjMsMTUuNkMyNy4zLDE1LjkgMjYuNywxOS45IDI2LjMsMjEuOUMyNiwyMy40IDI2LDIzLjIgMjUsMjMuOEMyNSwyMy44IDI0LjgsMjMuOSAyNC44LDI0LjFDMjQuOCwyNC4xIDI0LjgsMjQuMiAyNSwyNC4yTDMxLjEsMjQuMkMzMS4xLDI0LjIgMzEuMiwyNC4yIDMxLjMsMjQuMUMzMS4yLDIzLjkgMzEsMjMuOCAzMSwyMy44Wk02MC4xLDIzLjJDNTguOSwyMy4yIDU4LjYsMjIuMyA1OC42LDIxQzU4LjYsMjAuNyA1OC44LDE0LjcgNjEuNiwxNC43QzYyLjcsMTQuNyA2MywxNS43IDYzLDE2LjhDNjMsMTguMSA2Mi41LDIzLjIgNjAuMSwyMy4yWk0zNy4xLDIyLjRDMzYsMjIuNCAzNS43LDIxLjQgMzUuNywyMC41QzM1LjcsMTguOSAzNi40LDE1LjUgMzguMywxNS41QzM5LjYsMTUuNSAzOS44LDE2LjYgMzkuOCwxNy42QzM5LjgsMTkuMSAzOS4xLDIyLjQgMzcuMSwyMi40Wk02MS41LDEzLjVDNTkuNiwxMy41IDU3LjYsMTQuNCA1Ni4zLDE1LjhMNTYuMywxNS40QzU2LjMsMTQuNCA1NS42LDEzLjUgNTQuNCwxMy41QzUzLjEsMTMuNSA1MS43LDE0LjMgNTAuNiwxNS45TDUxLDEzLjlDNTEsMTMuOCA1MC45LDEzLjggNTAuOSwxMy44TDQwLjYsMTMuOEM0MC41LDEzLjggNDAuNSwxNCA0MC41LDE0TDQwLjIsMTUuNkMzOS45LDE0LjIgMzguNywxMy41IDM3LjMsMTMuNUMzMy44LDEzLjUgMzEuNywxNyAzMS43LDIwLjNDMzEuNywyMi4zIDMzLDIzLjkgMzUuNCwyMy45QzM2LjgsMjMuOSAzOC4xLDIzLjIgMzguOSwyMkMzOC41LDIzLjggMzguNSwyNi44IDM1LjksMjYuOUMzNS4yLDI2LjkgMzQuMywyNi42IDM0LjMsMjUuN0MzNC4zLDI1LjQgMzQuNCwyNS4yIDM0LjUsMjQuOUMzNC42LDI0LjcgMzQuNCwyNC43IDM0LjQsMjQuN0wzMS40LDI0LjdDMzEuMiwyNC43IDMxLjIsMjQuOCAzMS4yLDI0LjhDMzEuMSwyNS4xIDMxLjEsMjUuNCAzMS4xLDI1LjVDMzEuMSwyNy43IDM0LDI4IDM1LjYsMjcuOUMzOS4xLDI3LjkgNDEuNywyNi4zIDQyLjEsMjQuMUw0My42LDE1LjlDNDMuOCwxNSA0My45LDE0LjYgNDQuNCwxNC4zQzQ0LjQsMTQuMyA0NC43LDE0LjEgNDUuMSwxNC4xTDQ1LjYsMTQuMUM0NS45LDE0LjEgNDYuMiwxNC4xIDQ2LjYsMTQuNEM0Ni45LDE0LjcgNDcsMTQuOCA0NywxNS4xQzQ3LDE1LjUgNDYuNCwxOS4zIDQ2LDIxLjRDNDUuNywyMi45IDQ1LjYsMjIuOCA0NC42LDIzLjNDNDQuNCwyMy40IDQ0LjQsMjMuNSA0NC40LDIzLjVMNDQuNSwyMy42TDUwLjksMjMuNkM1MC45LDIzLjYgNTEuMSwyMy42IDUxLjEsMjMuNEM1MS4xLDIzLjIgNTAuOSwyMy4yIDUwLjksMjMuMkM0OS44LDIyLjggNDkuNiwyMi44IDQ5LjYsMjIuMUM0OS42LDIxIDQ5LjksMTkuMSA1MC4zLDE3LjZDNTAuNiwxNi4yIDUxLjgsMTUuMiA1Mi41LDE1LjJDNTMsMTUuMiA1My4xLDE1LjYgNTMuMSwxNS45QzUzLjEsMTYuMiA1MywxNi41IDUyLjksMTYuOEM1Mi45LDE2LjggNTIuOCwxNi45IDUzLDE3TDU1LjMsMTdDNTQuOSwxNy44IDU0LjcsMTguNiA1NC43LDE5LjVDNTQuNywyMi42IDU2LjksMjQgNTkuOCwyNEM2NC40LDI0IDY2LjYsMjAuOSA2Ni42LDE3LjhDNjYuOCwxNSA2NC42LDEzLjUgNjEuNSwxMy41Wk0yMy43LDIzLjhDMjIuNSwyMy4zIDIyLjUsMjMuMSAyMi41LDIyLjVDMjIuNSwyMi4yIDIyLjYsMjEuNCAyMi43LDIwLjlMMjMuNywxNS40QzI0LDE0IDI0LjMsMTEuNyAyNC44LDEwQzI0LjgsOS45IDI0LjcsOS45IDI0LjcsOS45TDE5LjQsOS45QzE5LjMsOS45IDE5LjMsMTAgMTkuMywxMEMxOS4zLDEwLjIgMTkuNSwxMC4yIDE5LjUsMTAuMkwxOS45LDEwLjRDMjAuNSwxMC43IDIwLjcsMTEuMSAyMC43LDExLjNDMjAuNywxMi4yIDE5LjIsMjAuNSAxOC45LDIxLjhDMTguNiwyMy4zIDE4LjYsMjMuMSAxNy42LDIzLjdDMTcuNiwyMy43IDE3LjQsMjMuOCAxNy40LDI0QzE3LjQsMjQgMTcuNCwyNC4xIDE3LjYsMjQuMUwyMy43LDI0LjFDMjMuNywyNC4xIDIzLjgsMjQuMSAyMy45LDI0QzI0LDIzLjkgMjMuNywyMy44IDIzLjcsMjMuOFpNMTUuNSwxNi4zTDEzLjIsMTUuNEMxMS42LDE0LjcgMTEsMTQuMSAxMSwxMy4zQzExLDExLjYgMTIuOCwxMSAxNCwxMUMxNS42LDExIDE3LjEsMTEuNCAxNy43LDEzLjZDMTcuNywxMy42IDE3LjcsMTMuNyAxNy44LDEzLjdDMTcuOCwxMy43IDE3LjksMTMuNyAxOCwxMy42TDE4LjYsOS45QzE4LjYsOS43IDE4LjYsOS44IDE4LjYsOS44TDE4LjUsOS44QzE4LjUsOS44IDE3LjIsMTAuMSAxNC44LDkuOUwxNCw5LjlDMTAuNSw5LjkgNy4yLDExLjcgNy4yLDE1QzcuMiwxNi4zIDguMiwxNy41IDEwLjIsMTguNEwxMi4yLDE5LjJDMTMuMywxOS43IDE0LjEsMjAuMyAxNC4xLDIxLjFDMTQuMSwyMi43IDEyLjMsMjMuNSAxMC45LDIzLjVDOC40LDIzLjUgNy40LDIyLjcgNi44LDIwLjNDNi41LDIwIDYuNCwyMC4xIDYuNCwyMC4xTDYuMywyMC4zTDUuNiwyNC41QzUuNiwyNC43IDUuNiwyNC42IDUuNiwyNC42TDUuNywyNC42QzUuNywyNC42IDYuNCwyNC4zIDkuNSwyNC41QzkuOCwyNC41IDEwLjIsMjQuNiAxMC41LDI0LjZDMTYuNSwyNC42IDE3LjgsMjEgMTcuOCwxOS40QzE3LjgsMTcuNSAxNi44LDE2LjggMTUuNSwxNi4zWiIvPgogICAgPHBhdGggZD0iTTM1LjEsNS42QzM1LDUuNSAzNC45LDUuNSAzNC44LDUuNUwzNC40LDUuNUwzMi42LDEwLjdMMzIuMywxMi4xQzMyLjMsMTIuMyAzMi4xLDEyLjQgMzEuOSwxMi40TDI2LDEyLjRMMjUuOSwxMi43QzI1LjksMTIuOCAyNS45LDEyLjkgMjYsMTNDMjYuMSwxMy4xIDI2LjIsMTMuMSAyNi4zLDEzLjFMMzIuNSwxMy4xQzMyLjcsMTMuMSAzMi44LDEzIDMyLjksMTIuOEwzMy4yLDExLjNMMzUuMSw1LjhMMzUuMSw1LjZaTTMzLjUsNC42QzMzLjUsNC41IDMzLjUsNC40IDMzLjQsNC4zQzMzLjMsNC4yIDMzLjIsNC4yIDMzLjEsNC4yTDMyLjcsNC4yTDMyLjUsNC44TDMzLjMsNC44TDMzLjUsNC42WiIvPgogICAgPHBhdGggZD0iTTMyLjEsMTAuNEwzMS4zLDEwLjRMMzIuNyw1LjZMMzMuOCw1LjZMMzIuMSwxMC40Wk0zMS44LDExLjhMMjYuMywxMS44TDI2LjUsMTFMMzIsMTFMMzEuOCwxMS44Wk0yNi43LDUuNUwyNy44LDUuNUwyNy40LDEwLjNMMjYuNSwxMC4zTDI2LjcsNS41Wk0yOC43LDQuMkwzMC4xLDQuMkwyOC45LDEwLjNMMjgsMTAuM0wyOC43LDQuMlpNMzAuOCw0LjJMMzIuMiw0LjJMMzAuNSwxMC4zTDI5LjcsMTAuM0wzMC44LDQuMlpNMzQuNSw1QzM0LjQsNC45IDM0LjMsNC45IDM0LjIsNC45TDMyLjcsNC45TDMyLjksNEMzMi45LDMuOSAzMi45LDMuOCAzMi44LDMuN0MzMi43LDMuNiAzMi42LDMuNiAzMi41LDMuNkwyOC40LDMuNkMyOC4yLDMuNiAyOC4xLDMuNyAyOCwzLjlMMjcuOSw0LjlMMjYuMyw0LjlDMjYuMSw0LjkgMjUuOSw1IDI1LjksNS4yTDI1LjcsMTAuN0wyNS41LDEyLjFDMjUuNSwxMi4yIDI1LjUsMTIuMyAyNS42LDEyLjRDMjUuNywxMi41IDI1LjgsMTIuNSAyNS45LDEyLjVMMzIuMSwxMi41QzMyLjMsMTIuNSAzMi40LDEyLjQgMzIuNSwxMi4yTDMyLjgsMTAuN0wzNC43LDUuMkMzNC42LDUuMiAzNC42LDUuMSAzNC41LDVaIiBzdHlsZT0iZmlsbDpyZ2IoMjUyLDE5MSwwKTsiLz4KICAgIDxwYXRoIGQ9Ik0zMC4zLDIzLjFDMjkuMSwyMi42IDI5LjEsMjIuNCAyOS4xLDIxLjhDMjkuMSwyMS42IDI5LjEsMjEuMiAyOS41LDE4LjlDMjkuOCwxNy41IDMwLjEsMTUuMiAzMC42LDEzLjVDMzAuNiwxMy4zIDMwLjUsMTMuNCAzMC41LDEzLjRMMjUuMiwxMy40QzI1LjEsMTMuNCAyNS4xLDEzLjUgMjUuMSwxMy41QzI1LjEsMTMuNSAyNS4xLDEzLjYgMjUuMiwxMy43TDI1LjgsMTMuOUMyNi41LDE0LjIgMjYuNiwxNC43IDI2LjYsMTQuOUMyNi42LDE1LjIgMjYsMTkuMiAyNS42LDIxLjJDMjUuMywyMi43IDI1LjMsMjIuNSAyNC4zLDIzLjFDMjQuMywyMy4xIDI0LjEsMjMuMiAyNC4xLDIzLjRDMjQuMSwyMy40IDI0LjEsMjMuNSAyNC4zLDIzLjVMMzAuNCwyMy41QzMwLjQsMjMuNSAzMC41LDIzLjUgMzAuNiwyMy40QzMwLjUsMjMuMiAzMC4zLDIzLjEgMzAuMywyMy4xWk01OS40LDIyLjVDNTguMiwyMi41IDU3LjksMjEuNiA1Ny45LDIwLjNDNTcuOSwyMCA1OC4xLDE0IDYwLjksMTRDNjIsMTQgNjIuMywxNSA2Mi4zLDE2LjFDNjIuMywxNy40IDYxLjgsMjIuNSA1OS40LDIyLjVaTTM2LjQsMjEuN0MzNS4zLDIxLjcgMzUsMjAuNyAzNSwxOS44QzM1LDE4LjIgMzUuNywxNC44IDM3LjYsMTQuOEMzOC45LDE0LjggMzkuMSwxNS45IDM5LjEsMTYuOUMzOS4xLDE4LjUgMzguNCwyMS43IDM2LjQsMjEuN1pNNjAuOCwxMi45QzU4LjksMTIuOSA1Ni45LDEzLjggNTUuNiwxNS4yTDU1LjYsMTQuOEM1NS42LDEzLjggNTQuOSwxMi45IDUzLjcsMTIuOUM1Mi40LDEyLjkgNTEsMTMuNyA0OS45LDE1LjNMNTAuMywxMy4zQzUwLjMsMTMuMiA1MC4yLDEzLjIgNTAuMiwxMy4yTDM5LjksMTMuMkMzOS44LDEzLjIgMzkuOCwxMy40IDM5LjgsMTMuNEwzOS41LDE1LjFDMzkuMiwxMy43IDM4LDEzIDM2LjYsMTNDMzMuMSwxMyAzMSwxNi41IDMxLDE5LjhDMzEsMjEuOCAzMi4zLDIzLjQgMzQuNywyMy40QzM2LjEsMjMuNCAzNy40LDIyLjcgMzguMiwyMS41QzM3LjgsMjMuMyAzNy44LDI2LjMgMzUuMiwyNi40QzM0LjUsMjYuNCAzMy42LDI2LjEgMzMuNiwyNS4yQzMzLjYsMjQuOSAzMy43LDI0LjcgMzMuOCwyNC40QzMzLjksMjQuMiAzMy43LDI0LjIgMzMuNywyNC4yTDMwLjcsMjQuMkMzMC41LDI0LjIgMzAuNSwyNC4zIDMwLjUsMjQuM0MzMC40LDI0LjYgMzAuNCwyNC45IDMwLjQsMjVDMzAuNCwyNy4yIDMzLjMsMjcuNSAzNC45LDI3LjRDMzguNCwyNy40IDQxLDI1LjggNDEuNCwyMy42TDQyLjksMTUuNEM0My4xLDE0LjUgNDMuMiwxNC4xIDQzLjcsMTMuOEM0My43LDEzLjggNDQsMTMuNiA0NC41LDEzLjZMNDUsMTMuNkM0NS4zLDEzLjYgNDUuNiwxMy43IDQ1LjksMTMuOUM0Ni4yLDE0LjIgNDYuMywxNC4zIDQ2LjMsMTQuNkM0Ni4zLDE1IDQ1LjcsMTguOCA0NS4zLDIwLjlDNDUsMjIuNCA0NC45LDIyLjMgNDMuOSwyMi44QzQzLjcsMjIuOSA0My43LDIzIDQzLjcsMjNMNDMuOCwyMy4xTDUwLjQsMjMuMUM1MC40LDIzLjEgNTAuNiwyMy4xIDUwLjYsMjIuOUM1MC42LDIyLjcgNTAuNCwyMi43IDUwLjQsMjIuN0M0OS4zLDIyLjMgNDkuMSwyMi4zIDQ5LjEsMjEuNkM0OS4xLDIwLjUgNDkuNCwxOC42IDQ5LjgsMTcuMUM1MC4xLDE1LjcgNTEuMywxNC43IDUyLDE0LjdDNTIuNSwxNC43IDUyLjYsMTUuMSA1Mi42LDE1LjRDNTIuNiwxNS43IDUyLjUsMTYgNTIuNCwxNi4zQzUyLjQsMTYuMyA1Mi4zLDE2LjQgNTIuNSwxNi41TDU0LjgsMTYuNUM1NC40LDE3LjMgNTQuMiwxOC4xIDU0LjIsMTlDNTQuMiwyMi4xIDU2LjQsMjMuNSA1OS4zLDIzLjVDNjMuOSwyMy41IDY2LjEsMjAuNCA2Ni4xLDE3LjNDNjYuMSwxNC4zIDYzLjksMTIuOCA2MC44LDEyLjlaTTE0LjgsMTUuNkwxMi41LDE0LjdDMTAuOSwxNCAxMC4zLDEzLjQgMTAuMywxMi42QzEwLjMsMTAuOSAxMi4xLDEwLjMgMTMuMywxMC4zQzE0LjksMTAuMyAxNi40LDEwLjcgMTcsMTIuOUMxNywxMi45IDE3LDEzIDE3LjEsMTNDMTcuMSwxMyAxNy4yLDEzIDE3LjMsMTIuOUwxNy45LDkuMkMxNy45LDkgMTcuOSw5LjEgMTcuOSw5LjFMMTcuOCw5LjFDMTcuOCw5LjEgMTYuNSw5LjQgMTQuMSw5LjJMMTMuMyw5LjJDOS43LDkgNi40LDEwLjggNi40LDE0LjFDNi40LDE1LjQgNy40LDE2LjYgOS40LDE3LjVMMTEuNCwxOC4zQzEyLjUsMTguOCAxMy4zLDE5LjQgMTMuMywyMC4yQzEzLjMsMjEuOCAxMS41LDIyLjYgMTAuMSwyMi42QzcuNiwyMi42IDYuNiwyMS44IDYsMTkuNEM1LjksMTkuMyA1LjgsMTkuNCA1LjgsMTkuNEM1LjgsMTkuNCA1LjcsMTkuNCA1LjcsMTkuNkw1LDIzLjhDNSwyNCA1LDIzLjkgNSwyMy45TDUuMSwyMy45QzUuMSwyMy45IDUuOCwyMy42IDguOSwyMy44QzkuMiwyMy44IDkuNiwyMy45IDkuOSwyMy45QzE1LjksMjMuOSAxNy4yLDIwLjMgMTcuMiwxOC43QzE3LjEsMTYuOCAxNi4xLDE2LjEgMTQuOCwxNS42Wk0yMywyMy4xQzIxLjgsMjIuNiAyMS44LDIyLjQgMjEuOCwyMS44QzIxLjgsMjEuNSAyMS45LDIwLjcgMjIsMjAuMkwyMywxNC43QzIzLjMsMTMuMyAyMy42LDExIDI0LjEsOS4zQzI0LjEsOS4yIDI0LDkuMiAyNCw5LjJMMTguNyw5LjJDMTguNiw5LjIgMTguNiw5LjMgMTguNiw5LjNDMTguNiw5LjUgMTguOCw5LjUgMTguOCw5LjVMMTkuMiw5LjdDMTkuOCwxMCAyMCwxMC40IDIwLDEwLjZDMjAsMTEuNSAxOC41LDE5LjggMTguMiwyMS4xQzE3LjksMjIuNiAxNy45LDIyLjQgMTYuOSwyM0MxNi45LDIzIDE2LjcsMjMuMSAxNi43LDIzLjNDMTYuNywyMy4zIDE2LjcsMjMuNCAxNi45LDIzLjRMMjMsMjMuNEMyMywyMy40IDIzLjEsMjMuNCAyMy4yLDIzLjNDMjMuMywyMy4yIDIzLDIzLjEgMjMsMjMuMVoiIHN0eWxlPSJmaWxsOndoaXRlOyIvPgogICAgPHBhdGggZD0iTTQ1LjYsMy45QzQzLjQsMi4zIDM5LjksMi4zIDM1LjYsNS4xQzM1LjYsNS4xIDM1LjQsNS4zIDM1LjUsNS40QzM1LjYsNS41IDM1LjgsNS40IDM1LjgsNS40QzM5LjUsMy40IDQyLjcsMyA0NC42LDQuNEM0Ny4zLDYuNCA0Ny4yLDEwLjggNDQuOSwxNS43QzQ0LjUsMTYuNSA0NC4xLDE3LjQgNDMuNiwxOC4yTDQyLjksMjEuN0M0NC4yLDE5LjkgNDUuMywxOCA0Ni4xLDE2LjFDNDguNCwxMC45IDQ4LjQsNiA0NS42LDMuOVpNMzYuOSwyOC4yQzMxLDMzLjIgMjQuNSwzNS4yIDIxLjEsMzIuNkMxNy44LDMwLjIgMTguNCwyNC4zIDIxLjgsMTguMUMyMS44LDE4IDIxLjksMTcuOSAyMi4xLDE4QzIyLjIsMTggMjIuMiwxOC4yIDIyLjEsMTguM0MxOS41LDIzLjYgMTguOSwyOC43IDIxLjgsMzAuOUMyNC42LDMzIDI5LjYsMzEuOCAzNC41LDI4LjJDMzUsMjguMiAzNS40LDI4LjMgMzUuOCwyOC4zQzM2LjIsMjguMyAzNi42LDI4LjMgMzYuOSwyOC4yWiIgc3R5bGU9ImZpbGw6cmdiKDI1MiwxOTEsMCk7Ii8+Cjwvc3ZnPgo=" alt="Sligro logo"></div>
+            <div>
+              <div style="font-size:0.85rem; color:var(--text-dim); line-height:1.5;">Voegt Sligro-opmaak toe als aparte instructie voor na het aanmaken van het bestand.</div>
+              <div class="brand-swatches">
+                <span class="brand-swatch" style="--swatch:#009564;">Groen #009564</span>
+                <span class="brand-swatch" style="--swatch:#FFC034;">Geel #FFC034</span>
+                <span class="brand-swatch" style="--swatch:#1A1A1A;">Zwart #1A1A1A</span>
+                <span class="brand-swatch" style="--swatch:#F4F4F4;">Lichtgrijs #F4F4F4</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:14px;">
+            <div class="pb-field">
+              <label style="color:var(--accent-purple);">Huisstijlstijl</label>
+              <select id="pbBrandStyle">
+                <option value="rustig, professioneel en goed scanbaar">Rustig en professioneel</option>
+                <option value="compact, zakelijk en geschikt voor management">Compact managementgericht</option>
+                <option value="praktisch, duidelijk en geschikt voor dagelijks gebruik">Praktisch en duidelijk</option>
+                <option value="vriendelijk, toegankelijk en klantgericht">Vriendelijk en klantgericht</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pb-output-area"><div class="pb-output-label">Jouw Copilot-prompt</div><div class="pb-output" id="pbOutput">Vul de velden in en klik op <strong>Prompt bouwen</strong> om een kant-en-klare Copilot-prompt te genereren.</div><div class="pb-actions"><button class="btn btn-primary" onclick="buildPrompt()"><span class="mi">auto_fix_high</span>Prompt bouwen</button><span id="pbCopyBtns"><button class="btn btn-ghost" onclick="copyPrompt()"><span class="mi">content_copy</span>Kopieer</button></span><button class="btn btn-ghost" onclick="resetPrompt()" style="margin-left:auto; color:var(--text-dim); border-color:transparent; font-size:11.5px;"><span class="mi" style="font-size:13px;">restart_alt</span>Reset</button></div></div>
+  </div>
+
+  <div class="highlight-box"><h4>Tip: begin duidelijk, verfijn daarna</h4><p>Een prompt hoeft niet perfect te zijn. Begin met je doel en vraag daarna om verbetering: korter, concreter, vriendelijker, in tabelvorm of met actiepunten.</p></div>
+  <div class="source-note"><span>Bron</span><div><strong>Gebaseerd op:</strong> Microsoft Support - <em>Write a great prompt in Microsoft 365 Copilot</em> en de Microsoft Copilot Prompt Gallery.</div></div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTIE 5: MOGELIJKHEDEN
+     ═══════════════════════════════════════════ -->
+<section class="section" id="capabilities">
+  <div class="section-header">
+    <div class="section-label">Meer tijd voor wat echt telt</div>
+    <h2 class="section-title">Zo werkt Copilot het hardst voor jou</h2>
+    <p class="section-desc">Leestijd, schrijftijd, voorbereidingstijd – dat zijn de uren die Copilot je teruggeeft. Hier zijn de zes plekken waar je het meest verschil merkt.</p>
+  </div>
+  <div id="tipsStrip-capabilities"></div>
+
+  <div class="feature-rows">
+    <div class="feature-row">
+      <div class="feature-row-num">01</div>
+      <div><h3>Begin je dag met een vliegende start</h3><p>Vraag 's ochtends om een overzicht van je agenda, openstaande acties en mails die aandacht vragen. In twee minuten weet je wat er vandaag echt toe doet.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">02</div>
+      <div><h3>Lees minder, begrijp meer</h3><p>Dat rapport van 40 pagina's, die mailwisseling van drie weken terug – laat Copilot de kern eruit halen. Hoofdlijnen, besluiten en acties, direct leesbaar.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">03</div>
+      <div><h3>Schrijven zonder de drempel</h3><p>Vraag om een eerste concept en verfijn van daaruit. Korter, warmer, duidelijker – Copilot past aan zo vaak als nodig. Jij hoeft nooit meer met een leeg scherm te beginnen.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">04</div>
+      <div><h3>Scherp het overleg in</h3><p>Laat Copilot de juiste vragen bedenken, de agenda samenvatten of een korte briefing schrijven. Jij gaat goed voorbereid het gesprek in. Dat voelt iedereen.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">05</div>
+      <div><h3>Zet afspraken direct om in acties</h3><p>Overleg gedaan? Vraag meteen om een actielijst met eigenaar en deadline. Zo raakt er niks kwijt, en niemand kan later zeggen dat het niet duidelijk was.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">06</div>
+      <div><h3>Laat je tekst beter worden</h3><p>Vraag Copilot om gaten, tegenstrijdigheden of onduidelijkheden in je tekst te benoemen. Een extra paar ogen – zonder een collega lastig te vallen.</p></div>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <h4>Gebruik het om scherper te denken – niet alleen sneller</h4>
+    <p>De grootste winst zit niet alleen in tijdsbesparing. Stel jezelf de vragen die Copilot jou kan helpen beantwoorden: "Wat mis ik nog?", "Wat is hier eigenlijk de kern?", "Welke actie hoort hierbij, en wie pakt hem op?" en "Hoe landt dit bij de ontvanger?" Dat is Copilot op zijn best.</p>
+  </div>
+
+  <div class="source-note"><span>Bron</span><div><strong>Gebaseerd op:</strong> Microsoft Support - voorbeelden voor maken, samenvatten, bewerken, transformeren en bijpraten met Copilot.</div></div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTIE 6: KWALITEIT
+     ═══════════════════════════════════════════ -->
+<section class="section" id="limitations">
+  <div class="section-header">
+    <div class="section-label">Slim gebruiken</div>
+    <h2 class="section-title">Goed werk begint bij jouw check</h2>
+    <p class="section-desc">Copilot geeft je een vliegende start – maar de eindstreep haal jij. Jouw kennis, jouw oordeel en jouw leesronde maken het verschil tussen een concept en écht goed werk.</p>
+  </div>
+  <div id="tipsStrip-limitations"></div>
+
+  <div class="highlight-box">
+    <h4>Wat Copilot eigenlijk doet – en wat niet</h4>
+    <p>Copilot is een taalmodel: het genereert de meest logische voortzetting van jouw vraag, gebaseerd op patronen in tekst. Het weet niets zeker. Het heeft geen toegang tot live data buiten je Microsoft 365-omgeving, kent geen Sligro-specifieke afspraken tenzij jij die aanlevert; een overtuigende formulering is geen garantie voor correctheid. Klinkt zelfverzekerd? Dat is een kenmerk van het model, niet een bewijs van juistheid. Jij bent en blijft de eindverantwoordelijke.</p>
+  </div>
+
+  <div class="feature-rows" style="margin-bottom:32px;">
+    <div class="feature-row">
+      <div class="feature-row-icon"><span class="mi" style="color:var(--sligro-yellow);font-size:20px;">psychology_alt</span></div>
+      <div><h3>Hallucinaties: het model verzint soms iets</h3><p>Namen, bedragen, datums, bronnen – Copilot kan dingen produceren die plausibel klinken maar gewoon niet kloppen. Geen kwaad opzet, wel een kenmerk van hoe het model werkt. Altijd verifiëren, altijd.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-icon"><span class="mi" style="color:var(--accent-blue);font-size:20px;">schedule</span></div>
+      <div><h3>Geen live informatie</h3><p>Copilot heeft geen toegang tot het internet of je bedrijfssystemen in real time. Voor actuele prijzen, recente besluiten of nieuws van vandaag moet jij zelf de juiste bestanden aanleveren.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-icon"><span class="mi" style="color:var(--accent-purple);font-size:20px;">hearing</span></div>
+      <div><h3>Het model weet alleen wat jij vertelt</h3><p>Geef je weinig context? Dan vult Copilot de gaten zelf op – en niet altijd correct. Goede input is de helft van het werk. Wees specifiek over de situatie, de bron en het doel.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-icon"><span class="mi" style="color:var(--accent-red);font-size:20px;">record_voice_over</span></div>
+      <div><h3>Klinkt zeker – ook als het dat niet is</h3><p>Copilot formuleert altijd zelfverzekerd, ook als het op dun ijs staat. Een vloeiende zin is geen bewijs van juistheid. Laat je niet misleiden door een overtuigende stijl.</p></div>
+    </div>
+  </div>
+
+  <div class="limit-grid">
+    <div class="limit-item info"><h4>Lees alsof jij afzender bent</h4><p>Controleer of de tekst klopt, vriendelijk genoeg is en past bij de situatie.</p></div>
+    <div class="limit-item warn"><h4>Check feiten en afspraken</h4><p>Controleer namen, bedragen, aantallen, data, deadlines en actiehouders voordat je deelt.</p></div>
+    <div class="limit-item info"><h4>Vraag om bronnen</h4><p>Als Copilot informatie samenvat, vraag dan waarop het antwoord is gebaseerd.</p></div>
+    <div class="limit-item warn"><h4>Gebruik de juiste context</h4><p>Verwijs naar het juiste document, de juiste mail of het juiste overleg als je wilt dat Copilot daarop werkt.</p></div>
+    <div class="limit-item info"><h4>Maak het passend</h4><p>Vraag om een versie voor je doelgroep: winkel, hoofdkantoor, leverancier, klant of team.</p></div>
+    <div class="limit-item warn"><h4>Begin opnieuw bij nieuw onderwerp</h4><p>Start een nieuw gesprek als je naar een andere taak gaat. Dat houdt de context helder.</p></div>
+  </div>
+
+  <div class="do-dont-grid">
+    <div class="do-block">
+      <div class="block-header">
+        <div class="icon do-icon"><span class="mi" style="font-size:14px;vertical-align:-2px;">check</span></div>
+        <h3>Check dit altijd voordat je deelt</h3>
+      </div>
+      <ul class="do-list">
+        <li><strong>Namen en functies.</strong> Copilot haalt namen soms door elkaar of gebruikt een verouderde titel. Twee seconden controleren voorkomt een pijnlijk moment.</li>
+        <li><strong>Bedragen en aantallen.</strong> Getallen worden soms afgerond, omgedraaid of ingevuld op basis van wat "logisch klinkt". Nooit blind overnemen.</li>
+        <li><strong>Datums en deadlines.</strong> Kloppen de genoemde data met wat er echt in je agenda of systemen staat?</li>
+        <li><strong>Actiepunten en eigenaren.</strong> Staat de juiste persoon bij de juiste actie? Dat is jouw verantwoordelijkheid, niet die van het model.</li>
+        <li><strong>Toon en ontvanger.</strong> Past de formulering bij de relatie? Bij het kanaal? Bij wat je wilt uitstralen naar de ontvanger?</li>
+        <li><strong>Bronnen.</strong> Als het niet duidelijk is waarop een antwoord is gebaseerd; vraag het dan gewoon: "Waar baseert Copilot dit op?"</li>
+      </ul>
+    </div>
+    <div class="dont-block">
+      <div class="block-header">
+        <div class="icon dont-icon"><span class="mi" style="font-size:14px;vertical-align:-2px;">close</span></div>
+        <h3>Extra alert zijn hier</h3>
+      </div>
+      <ul class="dont-list">
+        <li><strong>Juridische of contractuele teksten.</strong> Copilot kent de Sligro-contracten niet. Gebruik output hooguit als startpunt; laat altijd de juiste collega of afdeling meekijken.</li>
+        <li><strong>Financiële conclusies.</strong> Een goed klinkende analyse is nog geen onderbouwing. Gebruik getallen uit Copilot als oriëntatie, nooit als beslisbasis zonder broncheck.</li>
+        <li><strong>Externe communicatie.</strong> Klanten en leveranciers merken fouten – en onthouden ze. Altijd nalezen, altijd.</li>
+        <li><strong>HR-communicatie over personen.</strong> Formuleringen over prestaties, functioneren of gedrag vereisen menselijk oordeel. Dit is niet iets wat je delegeert aan een taalmodel.</li>
+        <li><strong>Statistische claims.</strong> Copilot noemt soms statistieken die overtuigend klinken maar niet traceerbaar zijn. Vraag altijd naar de bron.</li>
+        <li><strong>Direct verzenden of publiceren.</strong> Nooit. Altijd een eigen leesronde. Zelfs als de tekst goed aanvoelt.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── Hoe het werkt ── -->
+  <div style="margin:44px 0 20px;">
+    <div class="section-label">Onder de motorkap</div>
+    <div style="font-family:Rockwell,'Rockwell Nova',Georgia,serif;font-size:1.5rem;font-weight:700;color:var(--black);line-height:1.15;margin-bottom:8px;">Hoe werkt het onder de motorkap?</div>
+    <p style="color:var(--text-dim);font-size:0.875rem;max-width:640px;margin-bottom:28px;">Je hoeft geen technicus te zijn om Copilot goed te gebruiken – maar een beetje begrip van hoe het werkt maakt je meteen een stuk scherper. Hieronder de begrippen die je echt moet kennen.</p>
+  </div>
+
+  <div class="llm-flow">
+    <div class="llm-flow-step fs-input">
+      <div class="llm-flow-label">Jij</div>
+      <div class="llm-flow-box">
+        <div class="llm-flow-title">Prompt</div>
+        <div class="llm-flow-sub">Wat jij typt en verstuurt – de gebruikersprompt.</div>
+      </div>
+    </div>
+    <div class="llm-flow-arrow">→</div>
+    <div class="llm-flow-step fs-ctx" style="flex:2;min-width:200px;">
+      <div class="llm-flow-label">Systeem bouwt venster op</div>
+      <div class="llm-flow-box">
+        <div class="llm-flow-title">Context venster</div>
+        <div class="llm-flow-pills" id="ctx-pills">
+          <span class="llm-pill p-sys" data-ctx="sys">Systeemprompt</span>
+          <span class="llm-pill p-hist" data-ctx="hist">Chatgeschiedenis</span>
+          <span class="llm-pill p-rag" data-ctx="rag">RAG-documenten</span>
+          <span class="llm-pill p-user" data-ctx="user">Jouw vraag</span>
+        </div>
+        <div class="ctx-segs">
+          <div class="ctx-seg ctx-seg-sys"  id="cs-sys"></div>
+          <div class="ctx-seg ctx-seg-hist" id="cs-hist"></div>
+          <div class="ctx-seg ctx-seg-rag"  id="cs-rag"></div>
+          <div class="ctx-seg ctx-seg-user" id="cs-user"></div>
+          <div class="ctx-seg ctx-seg-over" id="cs-over"></div>
+        </div>
+        <div class="ctx-meta">
+          <span>~<span id="ctx-tok">9.300</span> / 16.000 tokens</span>
+          <button class="ctx-addbtn" id="ctx-addbtn" onclick="event.stopPropagation();addCtxMsg()">+ bericht</button>
+        </div>
+        <div class="ctx-warn" id="ctx-warn"></div>
+      </div>
+    </div>
+    <div class="llm-flow-arrow">→</div>
+    <div class="llm-flow-step fs-model">
+      <div class="llm-flow-label">Verwerking</div>
+      <div class="llm-flow-box">
+        <div class="llm-flow-title">LLM</div>
+        <div class="llm-flow-sub">Genereert token voor token op basis van waarschijnlijkheid.</div>
+        <div class="llm-temp-bar"><span style="font-size:9px;white-space:nowrap;">feitelijk</span><div class="llm-temp-track"></div><span style="font-size:9px;white-space:nowrap;">creatief</span></div>
+        <div style="font-size:9px;color:#8a5c00;margin-top:3px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;">Temperature</div>
+      </div>
+    </div>
+    <div class="llm-flow-arrow">→</div>
+    <div class="llm-flow-step fs-out">
+      <div class="llm-flow-label">Resultaat</div>
+      <div class="llm-flow-box">
+        <div class="llm-flow-title">Output</div>
+        <div class="llm-flow-sub">Tekst, tabel of bestand – afhankelijk van taak en tools.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="term-section">
+    <div class="term-group-hdr">De motor</div>
+    <div class="term-grid">
+      <div class="term-card" id="term-llm" data-flow="fs-model">
+        <div class="term-name">LLM</div>
+        <div class="term-tag">Large Language Model</div>
+        <p>Een neuraal netwerk getraind op enorme hoeveelheden tekst. Het leert patronen – hoe woorden, zinnen en concepten samenhangen. Copilot is een toepassing bovenop zo'n model (GPT-4-klasse). Het begrijpt taal, maar weet niets zeker.</p>
+      </div>
+      <div class="term-card" id="term-token" data-flow="fs-ctx">
+        <div class="term-name">Token</div>
+        <div class="term-tag">Bouwsteen van tekst</div>
+        <p>Het model leest geen woorden maar tokens – stukjes van gemiddeld 3–4 tekens. "Vergadering" is 3 tokens. Alles in het context­venster telt: invoer én uitvoer samen. Meer tokens = langzamere verwerking.</p>
+      </div>
+      <div class="term-card" id="term-ctxwin" data-flow="fs-ctx">
+        <div class="term-name">Context Window</div>
+        <div class="term-tag">Het werkgeheugen van de sessie</div>
+        <p>Alles wat het model tegelijk kan zien en verwerken. Systeemprompt + chathistorie + RAG-documenten + jouw vraag moeten samen passen. Wat er niet in past wordt stil afgekapt – het model vergeet het zonder waarschuwing.</p>
+      </div>
+      <div class="term-card" id="term-toklim" data-flow="fs-ctx">
+        <div class="term-name">Token Limit</div>
+        <div class="term-tag">Plafond van het venster</div>
+        <p>De maximale grootte van het context­venster. Bij Copilot M365 ligt dat ruim, maar grote bestanden of lange gesprekken kunnen ertegen aanlopen. Vroege context verdwijnt dan stilletjes.</p>
+      </div>
+      <div class="term-card" id="term-temp" data-flow="fs-model">
+        <div class="term-name">Temperature</div>
+        <div class="term-tag">Mate van creativiteit</div>
+        <p>Stuurt hoe "avontuurlijk" het model de volgende token kiest. Laag = voorspelbaar en feitelijk. Hoog = gevarieerder maar minder precies. Copilot stelt dit intern in per taaktype – jij ziet het niet, maar het verklaart waarom brainstormprompts anders aanvoelen dan samenvattingen.</p>
+      </div>
+      <div class="term-card tc-amber" id="term-halluc" data-flow="fs-model">
+        <div class="term-name">Hallucination</div>
+        <div class="term-tag">Overtuigende onzin</div>
+        <p>Het model genereert een patroon waarvoor geen feitelijke basis bestaat – maar het klinkt correct. Geen bug: het model optimaliseert op plausibiliteit, niet op waarheid. Treedt vaker op bij weinig context of buiten zijn directe kennisbasis.</p>
+        <div class="term-note">Controleer altijd namen, cijfers en bronnen – ongeacht hoe zelfverzekerd de zin klinkt.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="term-section">
+    <div class="term-group-hdr">Hoe jij het stuurt</div>
+    <div class="term-grid">
+      <div class="term-card tc-blue" id="term-prompt" data-flow="fs-input">
+        <div class="term-name">Prompt</div>
+        <div class="term-tag">Wat jij instuurt</div>
+        <p>Alles wat jij typt en verstuurt — de gebruikersprompt. De kwaliteit van de output hangt direct af van de kwaliteit van de prompt. Gebruik het C·R·T·F-model: Context, Rol, Taak, Format.</p>
+        <div class="term-note">Dit is de enige knop die jij direct bedient. Elke andere instelling is transparant of verborgen.</div>
+      </div>
+      <div class="term-card tc-blue" id="term-sysprompt" data-flow="fs-ctx">
+        <div class="term-name">System Prompt</div>
+        <div class="term-tag">Persistente verborgen instructie</div>
+        <p>Een instructie die vóór het gesprek zit en het modelgedrag vooraf instelt: toon, rol, beperkingen. Copilot gebruikt dit intern. Jij ziet het niet, maar het stuurt hoe het reageert op alles wat jij verstuurt – inclusief wat het weigert te doen.</p>
+      </div>
+      <div class="term-card tc-blue" id="term-zeroshot" data-flow="fs-input">
+        <div class="term-name">Zero-shot</div>
+        <div class="term-tag">Koude vraag zonder voorbeeld</div>
+        <p>Je stelt een vraag zonder voorbeelden mee te geven. Werkt goed voor eenvoudige, open taken. Voor specifieke formats of stijlen levert het minder consistente output dan few-shot prompting.</p>
+      </div>
+      <div class="term-card tc-blue" id="term-fewshot" data-flow="fs-input">
+        <div class="term-name">Few-shot</div>
+        <div class="term-tag">Vraag met voorbeelden</div>
+        <p>Je plakt één of twee uitgewerkte voorbeelden in de prompt zodat het model het patroon overneemt. Sterk voor consistente formats: "Schrijf een productomschrijving zoals dit voorbeeld: …". Werkt beter dan iets uitleggen in woorden alleen.</p>
+        <div class="term-note">Plak een voorbeeld in het Context-veld van de Prompt-bouwer om few-shot te gebruiken.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="term-section">
+    <div class="term-group-hdr">Uitbreidingen en architectuur</div>
+    <div class="term-grid">
+      <div class="term-card tc-purple" id="term-rag" data-flow="fs-ctx">
+        <div class="term-name">RAG</div>
+        <div class="term-tag">Retrieval-Augmented Generation</div>
+        <p>Vóór het antwoorden worden relevante documenten opgehaald (SharePoint, OneDrive, e-mail) en in het context­venster geplaatst. Het model antwoordt dan op basis van die feiten – niet uit geheugen. Zo werkt Copilot M365 met jouw bestanden.</p>
+        <div class="term-note">Verwijs expliciet naar de juiste bron in je prompt — dan haalt RAG het juiste document op.</div>
+      </div>
+      <div class="term-card tc-purple" id="term-skills" data-flow="fs-out">
+        <div class="term-name">Skills</div>
+        <div class="term-tag">Ingebouwde acties</div>
+        <p>Voorgedefinieerde taken die Copilot direct kan uitvoeren: samenvatten, vertalen, actiepunten extraheren, e-mail opstellen. In M365 zijn dit de knoppen en snelacties in de interface — achterliggende skills die het model aanroept.</p>
+      </div>
+      <div class="term-card tc-purple" id="term-agent" data-flow="fs-out">
+        <div class="term-name">Agent</div>
+        <div class="term-tag">Autonoom taakuitvoerder</div>
+        <p>Een LLM dat zelfstandig stappen plant en uitvoert: het beslist welke tools het inzet, voert ze uit, beoordeelt het resultaat en past aan waar nodig. Copilot Agents in Teams en M365 zijn hier een voorbeeld van.</p>
+      </div>
+      <div class="term-card tc-purple">
+        <div class="term-name">Agentic Workflows</div>
+        <div class="term-tag">Meerstapsprocessen zonder handmatige sturing</div>
+        <p>Een keten van agentacties die een complexe taak afwerkt: zoek informatie → analyseer → schrijf rapport → stuur naar inbox. De richting waarin Copilot M365 zich actief ontwikkelt.</p>
+      </div>
+      <div class="term-card tc-purple">
+        <div class="term-name">MCP</div>
+        <div class="term-tag">Model Context Protocol</div>
+        <p>Een open standaard (Anthropic, 2024) waarmee een LLM externe tools en databronnen aanspreekt via een gestandaardiseerde koppeling – vergelijkbaar met een universele stekker voor AI-integraties. Maakt live data mogelijk buiten de eigen M365-omgeving.</p>
+      </div>
+      <div class="term-card tc-purple">
+        <div class="term-name">Fine Tuning</div>
+        <div class="term-tag">Modelaanpassing op eigen data</div>
+        <p>Het verder trainen van een basismodel op een specifieke dataset: stijl, terminologie, kennisdomein van de organisatie. Resultaat: een aangepast model. Dit is een IT/ML-traject – geen eindgebruikersoptie binnen M365 Copilot.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="source-note"><span>📖</span><div><strong>Gebaseerd op:</strong> Microsoft Support — blijf het gesprek met Copilot verfijnen en review gegenereerde inhoud voordat je die gebruikt.</div></div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTIE 7: PRIVACY & SECURITY
+     ═══════════════════════════════════════════ -->
+<section class="section" id="privacy">
+  <div class="section-header">
+    <div class="section-label">Gewoon goed gebruik</div>
+    <h2 class="section-title">Verstandig omgaan met informatie</h2>
+    <p class="section-desc">Gebruik Copilot zoals je een goede collega zou inschakelen: handig en vertrouwd, maar alleen met wat echt nodig is. Niets meer, niets minder.</p>
+  </div>
+  <div id="tipsStrip-privacy"></div>
+
+  <div class="feature-rows">
+    <div class="feature-row">
+      <div class="feature-row-num">01</div>
+      <div><h3>Gebruik wat je nodig hebt – niet meer</h3><p>Copilot kan werken met bestanden, mails en vergaderingen waar jij toegang toe hebt. Geef alleen wat echt nodig is voor de taak. Meer context is niet altijd beter als het niet relevant is.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">02</div>
+      <div><h3>Vertrouwelijk blijft vertrouwelijk</h3><p>Is een document, mail of vergadering vertrouwelijk? Dan is de Copilot-samenvatting of concepttekst dat ook. Behandel de output met dezelfde zorgvuldigheid als het origineel.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">03</div>
+      <div><h3>Geen privégegevens in een prompt</h3><p>BSN's, medische informatie, wachtwoorden, bankgegevens – die horen niet in een prompt, tenzij er echt geen andere manier is. Bij twijfel: laat het weg.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">04</div>
+      <div><h3>Lees altijd na voordat je doorstuurt</h3><p>Staat er iets in de output wat niet voor de ontvanger bedoeld is? Een aanname die niet klopt? Een naam die er niet in thuis hoort? Jouw leesronde vangt dat op.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">05</div>
+      <div><h3>Verwijs naar de juiste bron</h3><p>Noem het juiste bestand, de juiste mail, het juiste overleg. Hoe specifieker jij bent, hoe minder Copilot hoeft te gokken, en hoe betrouwbaarder het resultaat.</p></div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-row-num">06</div>
+      <div><h3>Twijfel? Vraag het gewoon</h3><p>Niet zeker of iets gedeeld mag worden? Vraag je leidinggevende of de Privacy Officer bij Sligro. Beter één vraag te veel dan één fout te veel.</p></div>
+    </div>
+  </div>
+
+  <div class="do-dont-grid">
+    <div class="do-block"><div class="block-header"><div class="icon do-icon"><span class="mi" style="font-size:14px;vertical-align:-2px;">check</span></div><h3>Praktische gewoontes</h3></div><ul class="do-list">
+      <li><strong>Gebruik zo min mogelijk gevoelige details.</strong> Beschrijf alleen wat nodig is voor de taak.</li>
+      <li><strong>Controleer de ontvanger.</strong> Past deze informatie bij degene met wie je het deelt?</li>
+      <li><strong>Bewaar context.</strong> Noem het doel van je vraag, zodat Copilot gerichter helpt.</li>
+      <li><strong>Maak output eigen.</strong> Jij blijft verantwoordelijk voor wat je verstuurt of presenteert.</li>
+    </ul></div>
+    <div class="dont-block"><div class="block-header"><div class="icon dont-icon"><span class="mi" style="font-size:14px;vertical-align:-2px;">close</span></div><h3>Niet doen</h3></div><ul class="dont-list">
+      <li><strong>Geen wachtwoorden of codes.</strong> Zet nooit inloggegevens, codes of sleutels in een prompt.</li>
+      <li><strong>Geen onnodige persoonsgegevens.</strong> Laat privegegevens weg als ze niet nodig zijn.</li>
+      <li><strong>Geen vertrouwelijke output breed delen.</strong> Een handige samenvatting kan nog steeds vertrouwelijk zijn.</li>
+      <li><strong>Geen automatische eindcontrole overslaan.</strong> Lees altijd na voordat je deelt.</li>
+    </ul></div>
+  </div>
+
+  <div class="source-note"><span>Bron</span><div><strong>Gebaseerd op:</strong> Microsoft Learn en Microsoft Support over Microsoft 365 Copilot, privacy, prompts en bronnen. Microsoft geeft aan dat je werkdata niet wordt gebruikt om Copilot voor andere klanten te trainen.</div></div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     AGENT BUILDER
+     ═══════════════════════════════════════════ -->
+<section class="section" id="agent-builder">
+  <div class="section-header">
+    <div class="section-label">Binnenkort beschikbaar</div>
+    <h2 class="section-title">Agent builder</h2>
+    <p class="section-desc">Stel je voor: een digitale assistent die werkt precies zoals jij dat wilt, afgestemd op jouw rol, jouw processen, jouw taal. Dat is wat agents je geven.</p>
+  </div>
+  <div class="highlight-box">
+    <h4>We werken eraan</h4>
+    <p>Deze sectie is in opbouw. Binnenkort vind je hier praktische training over het bouwen van agents via Microsoft Copilot Studio – van de eerste instructie tot een werkende assistent die jouw collega's dagelijks gebruiken.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     WORKFLOWS
+     ═══════════════════════════════════════════ -->
+<section class="section" id="workflows">
+  <div class="section-header">
+    <div class="section-label">Binnenkort beschikbaar</div>
+    <h2 class="section-title">Workflows</h2>
+    <p class="section-desc">Wat als terugkerende taken zichzelf afhandelen? Workflows maken dat mogelijk, en Copilot is de sleutel om ze slim in te richten.</p>
+  </div>
+  <div class="highlight-box">
+    <h4>We werken eraan</h4>
+    <p>Deze sectie is in opbouw. Binnenkort vind je hier training over het opzetten van geautomatiseerde workflows met Microsoft Copilot en Power Automate – van een eenvoudige trigger tot een volledig zelfstandig agentic proces.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTIE 8: FAQ
+     ═══════════════════════════════════════════ -->
+<section class="section" id="faq">
+  <div class="section-header">
+    <div class="section-label">Veelgestelde vragen</div>
+    <h2 class="section-title">Goede vraag. Hier het antwoord.</h2>
+    <p class="section-desc">De vragen die collega's het vaakst stellen, eerlijk en to the point beantwoord.</p>
+  </div>
+  <div id="tipsStrip-faq"></div>
+
+  <div class="accordion">
+    <div class="acc-item"><button class="acc-header" onclick="toggleAcc(this)"><span>Waar begin ik als ik Copilot nog weinig gebruik?</span><svg class="acc-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="acc-body"><div class="acc-inner">Klein beginnen werkt het best. Vat een mailwisseling samen, vraag om actiepunten uit een overleg, of laat een tekst korter maken. Geen grote projecten — gewoon even uitproberen. Je merkt al snel wat voor jou werkt en wat niet.</div></div></div>
+    <div class="acc-item"><button class="acc-header" onclick="toggleAcc(this)"><span>Kan ik Copilot-output direct gebruiken?</span><svg class="acc-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="acc-body"><div class="acc-inner">Als eerste versie: ja. Als eindproduct: nee. Check altijd de feiten, de toon, namen, bedragen en deadlines. En vraag jezelf af: past dit bij Sligro en bij de ontvanger? Dan pas verzenden.</div></div></div>
+    <div class="acc-item"><button class="acc-header" onclick="toggleAcc(this)"><span>Waar haalt Copilot informatie vandaan?</span><svg class="acc-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="acc-body"><div class="acc-inner">Uit twee bronnen: wat jij meegeeft in je prompt, en de Microsoft 365-informatie waar jij zelf toegang toe hebt — bestanden, mails, chats, vergaderingen. Wil je dat Copilot specifiek op een bron werkt? Noem hem dan expliciet.</div></div></div>
+    <div class="acc-item"><button class="acc-header" onclick="toggleAcc(this)"><span>Mag ik persoonsgegevens gebruiken in een prompt?</span><svg class="acc-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="acc-body"><div class="acc-inner">Alleen als het echt nodig is voor de taak. BSN's, wachtwoorden, medische informatie en bankgegevens horen sowieso niet in een prompt. Twijfel je? Laat het weg of vraag advies. Veilig werken is gewoon goed werken.</div></div></div>
+    <div class="acc-item"><button class="acc-header" onclick="toggleAcc(this)"><span>Het antwoord klopt niet — wat nu?</span><svg class="acc-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="acc-body"><div class="acc-inner">Gewoon doorvragen. Zeg concreet wat anders moet: "korter", "vriendelijker", "in een tabel", "gebaseerd op dit document". Copilot onthoudt de context van het gesprek — je hoeft niet opnieuw te beginnen.</div></div></div>
+    <div class="acc-item"><button class="acc-header" onclick="toggleAcc(this)"><span>Waarom geeft Copilot soms onjuiste informatie?</span><svg class="acc-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="acc-body"><div class="acc-inner">Copilot genereert tekst op basis van patronen — het weet niets zeker en heeft geen live toegang tot je systemen. Zonder duidelijke context vult het model gaten op met wat "waarschijnlijk klopt". Dat klinkt vaak overtuigend maar kan er ver naast zitten. Controleer altijd namen, cijfers, datums en bronnen.</div></div></div>
+    <div class="acc-item"><button class="acc-header" onclick="toggleAcc(this)"><span>Wat is het verschil tussen Copilot Chat en Copilot in Word of Excel?</span><svg class="acc-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="acc-body"><div class="acc-inner">Copilot Chat (via Microsoft 365 of Teams) is een losse assistent: je stelt vragen, krijgt antwoorden en kunt bestanden aanmaken. Copilot IN Word, Excel of PowerPoint werkt direct in het geopende bestand — het past de inhoud aan, formatteert, of vult aan op basis van wat er al staat. Voor opmaak en huisstijl heb je altijd de Copilot in de app nodig.</div></div></div>
+    <div class="acc-item"><button class="acc-header" onclick="toggleAcc(this)"><span>Mag ik gegevens van Sligro-klanten invoeren in Copilot?</span><svg class="acc-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="acc-body"><div class="acc-inner">Zakelijke klantgegevens (naam bedrijf, contactpersoon, bestelhistorie) mag je gebruiken voor werktaken binnen Microsoft 365 Copilot — de data blijft binnen de Sligro-tenant en wordt niet gebruikt voor AI-training. Voer geen privacygevoelige gegevens in zoals BSN's, creditcardnummers of medische informatie van individuele personen.</div></div></div>
+    <div class="acc-item"><button class="acc-header" onclick="toggleAcc(this)"><span>Waarom heb ik geen toegang tot Copilot of zie ik het niet?</span><svg class="acc-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="acc-body"><div class="acc-inner">Copilot vereist een aparte Microsoft 365 Copilot-licentie die per gebruiker wordt toegewezen. Niet iedereen bij Sligro heeft deze licentie. Zie je Copilot niet in je apps of Teams? Neem dan contact op met IT of je manager om te checken of jou een licentie is toegewezen.</div></div></div>
+    <div class="acc-item"><button class="acc-header" onclick="toggleAcc(this)"><span>Hoe lang onthoudt Copilot mijn gesprekken?</span><svg class="acc-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="acc-body"><div class="acc-inner">Copilot Chat onthoudt de context binnen één gesprek. Start je een nieuw gesprek, dan begint Copilot opnieuw zonder geheugen van eerdere sessies. Wil je voortbouwen op eerder werk, zet dan de relevante context altijd opnieuw in je prompt.</div></div></div>
+  </div>
+
+  <div class="source-note"><span>Bron</span><div><strong>Gebaseerd op:</strong> Microsoft Support-artikelen over prompts, Copilot Chat, Microsoft 365-apps, bronnen en privacy.</div></div>
+</section>
+
+</main>
+
+<!-- TOAST -->
+<div id="toast">✓ Prompt gekopieerd!</div>
+
+<!-- BRAND WORKFLOW MODAL -->
+<div id="brandModal" onclick="if(event.target===this)closeModal()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:600; align-items:center; justify-content:center; padding:24px;">
+  <div style="background:#fff; border-radius:4px; max-width:560px; width:100%; box-shadow:0 24px 64px rgba(0,0,0,0.35); overflow:hidden;">
+
+    <div style="background:var(--sligro-green); padding:16px 22px; display:flex; align-items:center; justify-content:space-between;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="background:rgba(255,255,255,0.25); border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0;">✓</span>
+        <span style="color:#fff; font-family:Rockwell,serif; font-size:1rem; font-weight:700;">Stap 1 gekopieerd — wat nu?</span>
+      </div>
+      <button onclick="closeModal()" style="background:none; border:none; color:rgba(255,255,255,0.75); cursor:pointer; line-height:1; padding:0 0 0 16px; display:flex; align-items:center;"><span class="mi" style="font-size:22px;">close</span></button>
+    </div>
+
+    <div style="padding:22px 24px;">
+
+      <div style="display:flex; flex-direction:column; gap:0; margin-bottom:22px; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;">
+
+        <div style="display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:#fff;">
+          <div style="width:26px; height:26px; border-radius:50%; background:var(--sligro-green); color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">1</div>
+          <div>
+            <div style="font-size:0.875rem; font-weight:700; color:var(--black); margin-bottom:2px;">Ga naar Copilot Chat en plak de prompt</div>
+            <div style="font-size:0.8rem; color:var(--text-dim); line-height:1.55;">Druk op Verzenden. Copilot maakt het bestand aan en geeft je een link.</div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:#fafafa; border-top:1px solid var(--border);">
+          <div style="width:26px; height:26px; border-radius:50%; background:var(--sligro-green); color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">2</div>
+          <div>
+            <div style="font-size:0.875rem; font-weight:700; color:var(--black); margin-bottom:2px;">Open het bestand via de link</div>
+            <div style="font-size:0.8rem; color:var(--text-dim); line-height:1.55;">Het bestand opent in <strong id="modalAppName" style="color:var(--black);">de app</strong>.</div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:#fff; border-top:1px solid var(--border);">
+          <div style="width:26px; height:26px; border-radius:50%; background:var(--sligro-yellow); color:var(--black); font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">3</div>
+          <div>
+            <div style="font-size:0.875rem; font-weight:700; color:var(--black); margin-bottom:2px;">Kopieer de opmaakinstructie hieronder</div>
+            <div style="font-size:0.8rem; color:var(--text-dim); line-height:1.55;">Open Copilot in <strong id="modalAppName2" style="color:var(--black);">de app</strong> (via het Copilot-icoon rechtsboven), plak de instructie en druk op Verzenden.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="background:var(--bg); border:1px solid var(--border); border-left:4px solid var(--sligro-yellow); border-radius:var(--radius); padding:12px 14px; font-size:12px; line-height:1.7; color:var(--text); white-space:pre-wrap; max-height:140px; overflow-y:auto; margin-bottom:14px;" id="modalBrandText"></div>
+
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-primary" onclick="copyBrandFromModal()" style="flex:1;"><span class="mi">format_paint</span>Kopieer opmaakinstructie</button>
+        <button class="btn btn-ghost" onclick="closeModal()"><span class="mi">close</span>Sluit</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Bundle definitions
+  const bundles = {
+    'ai-copilot': {
+      first: 'capabilities',
+      panels: ['capabilities', 'limitations'],
+      subTabs: [
+        { label: 'Mogelijkheden', icon: 'rocket_launch', id: 'capabilities' },
+        { label: 'Beperkingen & AI-begrippen', icon: 'verified', id: 'limitations' }
+      ]
+    },
+    'copilot-sligro': {
+      first: 'dos-donts',
+      panels: ['dos-donts', 'apps', 'privacy'],
+      subTabs: [
+        { label: "Tips & Do's", icon: 'thumb_up', id: 'dos-donts' },
+        { label: 'Per app', icon: 'apps', id: 'apps' },
+        { label: 'Veilig werken', icon: 'shield', id: 'privacy' }
+      ]
+    }
+  };
+
+  // ── Tab navigation
+  function showSection(id, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+    btn.setAttribute('aria-selected','true');
+    btn.classList.add('active');
+    const subNav = document.getElementById('subNavTabs');
+
+    if (bundles[id]) {
+      const bundle = bundles[id];
+      document.getElementById(bundle.first).classList.add('active');
+      subNav.innerHTML = bundle.subTabs.map((t, i) =>
+        `<button class="sub-tab-btn${i === 0 ? ' active' : ''}" onclick="showSubPanel('${id}','${t.id}',this)">` +
+        `<span class="mi">${t.icon}</span>${t.label}</button>`
+      ).join('');
+      subNav.style.display = 'flex';
+      if (bundle.first === 'capabilities') animateBars();
+      renderTips(bundle.first);
+    } else {
+      document.getElementById(id).classList.add('active');
+      subNav.style.display = 'none';
+      if (id === 'capabilities') animateBars();
+      renderTips(id);
+    }
+    window.scrollTo({ top: document.querySelector('.nav-tabs').offsetTop - 10, behavior: motionOK() ? 'smooth' : 'auto' });
+  }
+
+  function showSubPanel(bundleId, panelId, btn) {
+    const bundle = bundles[bundleId];
+    bundle.panels.forEach(p => {
+      const el = document.getElementById(p);
+      if (el) el.classList.remove('active');
+    });
+    document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(panelId).classList.add('active');
+    btn.classList.add('active');
+    if (panelId === 'capabilities') animateBars();
+    renderTips(panelId);
+    window.scrollTo({ top: document.querySelector('.nav-tabs').offsetTop - 10, behavior: motionOK() ? 'smooth' : 'auto' });
+  }
+
+  const tipPools = {
+    intro: [
+      "Begin met kleine taken: vat een mail samen of maak een eerste concept.",
+      "Gebruik Copilot Chat als startpunt — ga daarna naar Word, Outlook of PowerPoint.",
+      "Geef altijd context mee: wie ben jij, wat doe je, voor wie is het resultaat?",
+      "Stuur je vraag bij als het antwoord niet past — Copilot onthoudt de gesprekcontext.",
+      "Gebruik de Prompt-bouwer voor een kant-en-klare prompt in enkele klikken.",
+      "Verwijs naar het juiste bestand of de juiste mail — Copilot werkt dan veel gerichter.",
+      "Vraag altijd door: maak het korter, zet het in een tabel, voeg actiepunten toe.",
+      "Copilot is geen zoekmachine — gebruik het voor schrijven, samenvatten en structureren."
+    ],
+    apps: [
+      "Word: begin met een globale opzet en vraag daarna om uitbreiding per onderdeel.",
+      "Excel: zorg dat je data als tabel is opgemaakt — Copilot werkt daar het best mee.",
+      "PowerPoint: gebruik een Word-document als basis voor de presentatie-opzet.",
+      "Outlook: gebruik Samenvatten bij lange mailthreads voordat je antwoordt.",
+      "Teams: vraag om een samenvatting direct na het overleg, terwijl de context vers is.",
+      "Copilot Chat: verwijs expliciet naar bestanden of gebruik de @-vermelding.",
+      "Herschrijf Copilot-output altijd licht — maak het eigen en passend bij Sligro.",
+      "Start een nieuw gesprek als je naar een andere app of taak overschakelt."
+    ],
+    prompts: [
+      "Voeg altijd een bron toe — Copilot werkt stukken gerichter met een concrete referentie.",
+      "Gebruik de Rol-optie voor betere toon en invalshoek in je output.",
+      "Eén onderwerp per prompt — splits grote taken op in kleinere stappen.",
+      "Specificeer het formaat: als tabel, maximaal 150 woorden, met actiepunten.",
+      "Sla goede prompts op in een document voor hergebruik bij vergelijkbare taken.",
+      "Vraag om aanpassing als de eerste versie niet past: bondig, vriendelijker.",
+      "Gebruik de CRTF-bouwstenen in volgorde: Context eerst, Format als laatste.",
+      "Test je prompt in Copilot Chat voordat je hem in Word of PowerPoint gebruikt."
+    ],
+    capabilities: [
+      "Gebruik Copilot 's ochtends voor dagstart: agenda, mails en prioriteiten.",
+      "Laat een samenvatting maken voordat je een lang document leest.",
+      "Vraag om actiepunten na elk overleg — direct, terwijl de context nog vers is.",
+      "Gebruik Copilot voor tooncontrole voordat je iets belangrijks verstuurt.",
+      "Sla goede prompts op in een persoonlijk document voor hergebruik.",
+      "Vraag Copilot om gaten in je redenering of ontbrekende informatie te benoemen.",
+      "Gebruik Vergelijk om twee documenten of versies naast elkaar te zetten.",
+      "Laat Copilot een eerste agendavoorstel maken op basis van doelen en betrokkenen."
+    ],
+    limitations: [
+      "Controleer altijd namen, bedragen en deadlines — Copilot vult soms plausibel in.",
+      "Vraag om bronvermelding: Waar baseert Copilot dit op?",
+      "Lees output hardop — fouten vallen dan sneller op dan bij stilzwijgend lezen.",
+      "Gebruik de output als concept, niet als eindproduct.",
+      "Vraag een collega mee te kijken bij belangrijke externe communicatie.",
+      "Besteed extra aandacht aan cijfers en namen van personen of bedrijven.",
+      "Geef aanvullende context als het antwoord te algemeen of onjuist is.",
+      "Copilot kan overtuigend klinken terwijl het feitelijk incorrect is — lees altijd na."
+    ],
+    privacy: [
+      "Gebruik alleen informatie die je normaal ook met een collega zou delen.",
+      "Controleer of output vertrouwelijke data bevat voordat je het doorstuurt.",
+      "Laat onnodige persoonsgegevens weg — BSN's en wachtwoorden horen niet in een prompt.",
+      "Twijfel? Vraag je leidinggevende of de Privacy Officer bij Sligro.",
+      "Copilot-output kan vertrouwelijk zijn, ook als de tekst er neutraal uitziet.",
+      "Verwijs naar bestanden in plaats van gevoelige data letterlijk in je prompt te plakken.",
+      "Zakelijke klantgegevens zijn toegestaan binnen Sligro M365 — privédata van personen niet.",
+      "Gegevens die je invoert worden niet gebruikt voor AI-training buiten de Sligro-tenant."
+    ],
+    faq: [
+      "Gebruik de Prompt-bouwer als je niet weet hoe je een vraag moet formuleren.",
+      "Start een nieuw gesprek als je van onderwerp wisselt — houdt de context helder.",
+      "Geef Copilot feedback via duim omhoog/omlaag — helpt de kwaliteit verbeteren.",
+      "Je kunt een antwoord altijd verfijnen: vraag om andere toon, lengte of vorm.",
+      "Copilot Chat en Copilot in apps zijn verschillend — gebruik ze voor de juiste taak.",
+      "Zie je Copilot niet in een app? Controleer of jou een licentie is toegewezen.",
+      "Sla antwoorden die je vaker nodig hebt op in een persoonlijk notitiesdocument.",
+      "Je kunt meerdere vragen combineren in één prompt als ze over hetzelfde onderwerp gaan."
+    ]
+  };
+
+  function renderTips(sectionId) {
+    const pool = tipPools[sectionId];
+    const el   = document.getElementById('tipsStrip-' + sectionId);
+    if (!pool || !el) return;
+    const picked = pool.slice().sort(() => Math.random() - 0.5).slice(0, 3);
+    el.innerHTML =
+      '<div class="tips-strip">' +
+      '<div class="tips-strip-hdr"><span class="mi" style="font-size:12px;vertical-align:-2px;text-transform:none;letter-spacing:normal;">lightbulb</span> Tips</div>' +
+      picked.map(t => '<div class="tip-row">' + t + '</div>').join('') +
+      '</div>';
+  }
+
+  // ── App tabs
+  function showApp(id, btn) {
+    document.querySelectorAll('.app-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.app-tab').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected','false');
+      b.style.background = '';
+      b.style.borderColor = '';
+      b.style.color = '';
+    });
+    btn.setAttribute('aria-selected','true');
+    document.getElementById('app-' + id).classList.add('active');
+    btn.classList.add('active');
+    const c = btn.dataset.color;
+    if (c) { btn.style.background = c; btn.style.borderColor = c; btn.style.color = '#fff'; }
+  }
+
+  // ── Accordion
+  function toggleAcc(btn) {
+    const item = btn.closest('.acc-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.acc-item').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.acc-header').setAttribute('aria-expanded','false');
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      btn.setAttribute('aria-expanded','true');
+    }
+  }
+
+  function initAccordionAria() {
+    document.querySelectorAll('.acc-item').forEach((item, i) => {
+      const btn  = item.querySelector('.acc-header');
+      const body = item.querySelector('.acc-body');
+      const id   = 'acc-body-' + i;
+      body.id = id;
+      btn.setAttribute('aria-expanded', item.classList.contains('open') ? 'true' : 'false');
+      btn.setAttribute('aria-controls', id);
+    });
+  }
+
+  // ── Capability bars animation
+  function animateBars() {
+    setTimeout(() => {
+      document.querySelectorAll('.cap-bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.val + '%';
+      });
+    }, 100);
+  }
+
+  // Initialize bars at 0
+  document.querySelectorAll('.cap-bar-fill').forEach(bar => { bar.style.width = '0'; });
+
+  // ── Prompt builder
+  // ── Quick productivity prompts data
+  const quickPromptData = [
+    {
+      label: "Agenda deze week",
+      context: "Ik wil een overzicht van mijn verplichtingen en afspraken voor de komende week.",
+      role: "",
+      task: "Maak een overzicht van",
+      subject: "mijn agenda voor deze week",
+      audience: "",
+      tone: "bondig en to-the-point",
+      format: "Gebruik een tabel.",
+      source: "mijn agenda en afspraken in Outlook"
+    },
+    {
+      label: "E-mails beantwoorden",
+      context: "Ik heb de afgelopen week veel e-mails ontvangen en wil weten welke ik nog moet beantwoorden.",
+      role: "",
+      task: "Maak een overzicht van",
+      subject: "e-mails van de afgelopen week die ik nog niet heb beantwoord",
+      audience: "",
+      tone: "bondig en to-the-point",
+      format: "Gebruik bullet points.",
+      source: "mijn inbox van de afgelopen 7 dagen"
+    },
+    {
+      label: "Vergadering samenvatten",
+      context: "Ik wil de belangrijkste punten en besluiten van de vergadering van gisteren terugzien.",
+      role: "",
+      task: "Vat samen",
+      subject: "de vergadering van gisteren inclusief actiepunten en besluiten",
+      audience: "voor de deelnemers",
+      tone: "bondig en to-the-point",
+      format: "Gebruik een korte samenvatting gevolgd door actiepunten.",
+      source: "de transcriptie van de vergadering van gisteren"
+    },
+    {
+      label: "Takenlijst uit e-mails",
+      context: "Ik wil alle openstaande acties en verzoeken uit mijn e-mails in één overzicht hebben.",
+      role: "Jij bent een projectmanager.",
+      task: "Zet om in actiepunten",
+      subject: "alle openstaande taken en verzoeken uit mijn inbox",
+      audience: "",
+      tone: "bondig en to-the-point",
+      format: "Gebruik genummerde stappen.",
+      source: "mijn e-mails van de afgelopen 3 dagen"
+    },
+    {
+      label: "E-mail opstellen als antwoord",
+      context: "Ik ontvang regelmatig e-mails waar ik professioneel op moet reageren.",
+      role: "Jij bent een ervaren communicatiespecialist.",
+      task: "Schrijf",
+      subject: "een professioneel antwoord op de laatste e-mail in deze thread",
+      audience: "voor de afzender",
+      tone: "professioneel en helder",
+      format: "Maximaal 150 woorden.",
+      source: "de geselecteerde e-mailthread"
+    },
+    {
+      label: "Excel-bestand analyseren",
+      context: "Ik heb een Excel-bestand met data en wil inzicht in de trends en uitschieters.",
+      role: "Jij bent een financieel analist.",
+      task: "Analyseer",
+      subject: "de trends, uitschieters en belangrijkste inzichten in dit bestand",
+      audience: "voor het managementteam",
+      tone: "zorgvuldig en feitelijk",
+      format: "Gebruik een korte samenvatting gevolgd door actiepunten.",
+      source: "het geopende Excel-bestand"
+    },
+    {
+      label: "Presentatie van document",
+      context: "Ik heb een uitgebreid document en wil dit omzetten naar een heldere presentatie.",
+      role: "Jij bent een marketingstrateeg.",
+      task: "Schrijf",
+      subject: "een presentatie met maximaal 8 slides op basis van dit document",
+      audience: "voor het managementteam",
+      tone: "professioneel en helder",
+      format: "Elke slide: titel + 3 bullet points + sprekersnoot.",
+      source: "het geopende Word-document"
+    },
+    {
+      label: "Projectstatus ophalen",
+      context: "Ik wil weten wat de huidige stand van zaken is rondom een specifiek project.",
+      role: "Jij bent een projectmanager.",
+      task: "Maak een overzicht van",
+      subject: "de huidige status, openstaande acties en risico's van dit project",
+      audience: "voor het managementteam",
+      tone: "bondig en to-the-point",
+      format: "Gebruik een korte samenvatting gevolgd door actiepunten.",
+      source: "e-mails, Teams-chats en documenten gerelateerd aan dit project",
+      outputType: "een managementsamenvatting"
+    },
+    {
+      label: "Onderwerp onderzoeken",
+      context: "Ik wil snel inzicht in een specifiek onderwerp dat speelt in mijn werk. Relevante informatie staat verspreid over e-mails, chats, documenten en bestanden.",
+      role: "",
+      task: "Maak een overzicht van",
+      subject: "wat er al bekend is over dit onderwerp op basis van recente berichten, documenten en gesprekken",
+      audience: "",
+      tone: "bondig en to-the-point",
+      format: "Gebruik een korte samenvatting gevolgd door actiepunten.",
+      source: "mijn e-mails in Outlook, Teams-berichten, documenten in SharePoint en bestanden in OneDrive",
+      outputType: "een managementsamenvatting"
+    },
+    {
+      label: "Klantbezoek voorbereiden",
+      context: "Ik bezoek binnenkort een Sligro-klant en wil goed voorbereid het gesprek ingaan. Ik wil de belangrijkste informatie, openstaande punten en gespreksonderwerpen op een rij.",
+      role: "Jij bent een salesmanager.",
+      task: "Maak een overzicht van",
+      subject: "de belangrijkste klantinformatie, recente ontwikkelingen en concrete gespreksonderwerpen voor dit bezoek",
+      audience: "",
+      tone: "bondig en to-the-point",
+      format: "Gebruik een korte samenvatting gevolgd door actiepunten.",
+      source: "de accountinformatie, orderhistorie en eerdere correspondentie van deze klant in Outlook en Teams",
+      outputType: "een managementsamenvatting"
+    },
+    {
+      label: "Seizoensaanbod communiceren",
+      context: "We lanceren een nieuw seizoensaanbod en willen dit helder communiceren naar horeca-klanten en/of interne collega's.",
+      role: "Jij bent een marketingstrateeg.",
+      task: "Schrijf",
+      subject: "een pakkende communicatie over het nieuwe seizoensaanbod met focus op relevantie voor de horeca-doelgroep",
+      audience: "voor klanten",
+      tone: "vriendelijk en toegankelijk",
+      format: "Maximaal 150 woorden.",
+      source: "de productinformatie en het seizoensaanbod in het geopende document",
+      outputType: "een one-page briefing"
+    },
+    {
+      label: "Werkinstructie schrijven",
+      context: "We willen een werkproces vastleggen zodat collega's het zelfstandig en consistent kunnen uitvoeren.",
+      role: "Jij bent een procesverbeteraar.",
+      task: "Schrijf",
+      subject: "een duidelijke stap-voor-stap werkinstructie voor dit proces inclusief aandachtspunten en uitzonderingen",
+      audience: "voor nieuwe medewerkers",
+      tone: "professioneel en helder",
+      format: "Gebruik genummerde stappen.",
+      source: "",
+      outputType: "een instructie of handleiding"
+    },
+    {
+      label: "KPI-rapportage samenvatten",
+      context: "Ik heb een KPI-rapportage of dataset en wil de belangrijkste inzichten, afwijkingen en aanbevelingen snel helder hebben voor management of stakeholders.",
+      role: "Jij bent een business analyst.",
+      task: "Analyseer",
+      subject: "de belangrijkste trends, afwijkingen ten opzichte van target en concrete aanbevelingen uit deze rapportage",
+      audience: "voor het managementteam",
+      tone: "zorgvuldig en feitelijk",
+      format: "Gebruik een korte samenvatting gevolgd door actiepunten.",
+      source: "de KPI-rapportage of het geopende Excel-bestand",
+      outputType: "een managementsamenvatting"
+    },
+    {
+      label: "Productomschrijving schrijven",
+      context: "Ik wil een overtuigende productomschrijving schrijven voor de Sligro-webshop of catalogus. De tekst moet scanbaar zijn en de klant direct aanspreken op voordelen.",
+      role: "Jij bent een marketingstrateeg.",
+      task: "Schrijf",
+      subject: "een scanbare, voordelen-first productomschrijving die de horeca-koper direct aanspreekt",
+      audience: "voor klanten",
+      tone: "vriendelijk en toegankelijk",
+      format: "Gebruik bullet points.",
+      source: "de productspecificaties en het geopende document",
+      outputType: "een one-page briefing"
+    },
+    {
+      label: "Webpaginatekst verbeteren",
+      context: "Ik heb een bestaande webpagina waarvan de tekst duidelijker, actiegerichter en conversiegerichter moet worden zonder de kern te verliezen.",
+      role: "Jij bent een marketingstrateeg.",
+      task: "Herschrijf",
+      subject: "de webpaginatekst zodat deze duidelijker, actiegerichter en beter converterend is",
+      audience: "voor klanten",
+      tone: "bondig en to-the-point",
+      format: "Schrijf als lopende tekst.",
+      source: "de huidige webpaginatekst in het geopende document",
+      outputType: "een nieuw Word-document (.docx)"
+    },
+    {
+      label: "A/B-test hypothese opstellen",
+      context: "Ik wil een conversieprobleem of kans op onze website of in een campagne onderzoeken met een gestructureerde A/B-test.",
+      role: "Jij bent een business analyst.",
+      task: "Maak een plan voor",
+      subject: "een onderbouwde A/B-test hypothese met variant, verwacht effect, doelgroep en meetmethode",
+      audience: "",
+      tone: "zorgvuldig en feitelijk",
+      format: "Gebruik een tabel.",
+      source: "de beschikbare analytics, gebruikersfeedback of campagnedata in het geopende document",
+      outputType: "een managementsamenvatting"
+    },
+    {
+      label: "SEO-tekst optimaliseren",
+      context: "Ik heb een bestaande tekst die beter vindbaar moet zijn in zoekmachines zonder aan leesbaarheid of merkstijl in te boeten.",
+      role: "Jij bent een marketingstrateeg.",
+      task: "Herschrijf",
+      subject: "de tekst met focus op zoekintentie, relevante zoekwoorden en leesbaarheid voor de doelgroep",
+      audience: "voor klanten",
+      tone: "professioneel en helder",
+      format: "Schrijf als lopende tekst.",
+      source: "de huidige tekst in het geopende document",
+      outputType: "een nieuw Word-document (.docx)"
+    },
+    {
+      label: "Afspraak plannen",
+      context: "Ik wil een afspraak inplannen met een collega.",
+      role: "",
+      task: "Schrijf",
+      subject: "een afspraak met een collega",
+      audience: "",
+      tone: "duidelijk en direct",
+      format: "",
+      source: "",
+      rawPrompt: "Plan een afspraak in tussen mij en /[naam collega]. Onderwerp: [onderwerp]. Eerstvolgende vrije tijdstip, minimaal een [duur]."
+    }
+  ];
+
+  function loadQuick(idx) {
+    const d = quickPromptData[idx];
+    document.getElementById('pbContext').value  = d.context;
+    document.getElementById('pbRole').value     = d.role;
+    document.getElementById('pbTask').value     = d.task;
+    document.getElementById('pbSubject').value  = d.subject;
+    document.getElementById('pbAudience').value = d.audience;
+    document.getElementById('pbTone').value     = d.tone;
+    document.getElementById('pbFormat').value      = d.format;
+    document.getElementById('pbSource').value      = d.source;
+    document.getElementById('pbOutputType').value = d.outputType || '';
+    document.querySelectorAll('.qp-btn').forEach(b => {
+      const m = b.getAttribute('onclick').match(/\d+/);
+      b.classList.toggle('active', m && parseInt(m[0]) === idx);
+    });
+    buildPrompt();
+    if (d.rawPrompt) {
+      const el = document.getElementById('pbOutput');
+      el._raw = d.rawPrompt;
+      el._chatRaw = d.rawPrompt;
+      const lbl = '<span style="color:#6264A7;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">COPILOT CHAT</span>';
+      const body = d.rawPrompt.replace(/\[([^\]]+)\]/g, '<strong style="background:#eeecf7;padding:1px 4px;border-radius:3px;">[$1]</strong>');
+      const note = d.rawNote ? '\n\n<span style="font-size:11px;color:var(--text-dim);">⚠ ' + d.rawNote + '</span>' : '';
+      el.innerHTML = lbl + '\n' + body + note;
+      el.style.opacity = '0';
+      setTimeout(() => { el.style.transition = 'opacity 0.25s'; el.style.opacity = '1'; }, 50);
+    }
+    document.querySelector('.prompt-builder').scrollIntoView({behavior:motionOK()?'smooth':'auto', block:'nearest'});
+  }
+
+  function buildPrompt() {
+    const context  = document.getElementById('pbContext').value.trim();
+    const role     = document.getElementById('pbRole').value.trim();
+    const task     = document.getElementById('pbTask').value;
+    const subjectEl = document.getElementById('pbSubject');
+    const subject   = subjectEl.value.trim();
+    if (!subject) {
+      subjectEl.style.borderColor = 'var(--accent-red)';
+      subjectEl.placeholder = 'Vul een onderwerp in — dit is verplicht';
+      subjectEl.focus();
+      return;
+    }
+    subjectEl.style.borderColor = 'var(--border)';
+    const audience = document.getElementById('pbAudience').value;
+    const tone     = document.getElementById('pbTone').value;
+    const format   = document.getElementById('pbFormat').value;
+    const source   = document.getElementById('pbSource').value.trim();
+    const useBrand = document.getElementById('pbUseBrand').checked;
+
+    const appMap = {
+      'een nieuw Word-document (.docx)': 'Word',
+      'een nieuwe Excel-werkmap (.xlsx)': 'Excel',
+      'een nieuwe PowerPoint-presentatie (.pptx)': 'PowerPoint',
+      'een managementsamenvatting': 'Word',
+      'een one-page briefing': 'Word',
+      'een tabel of rapportage': 'Excel',
+      'een instructie of handleiding': 'Word',
+      'een gestructureerde PowerPoint-slide als basis voor een infographic': 'PowerPoint'
+    };
+
+    // ── Stap 1: content + file creation → Copilot Chat
+    let chatParts = [];
+    if (role)    chatParts.push(role);
+    if (context) chatParts.push(context);
+    const audienceStr = audience ? ` ${audience}` : '';
+    chatParts.push(`${task} ${subject}${audienceStr}.`);
+    chatParts.push(`${format} Gebruik een ${tone} toon.`);
+    if (source)  chatParts.push(`Gebruik hiervoor: ${source}.`);
+
+    const outputType  = document.getElementById('pbOutputType').value;
+    const appName     = appMap[outputType] || 'Word';
+    const isFile      = ['een nieuw Word-document (.docx)', 'een nieuwe Excel-werkmap (.xlsx)', 'een nieuwe PowerPoint-presentatie (.pptx)', 'een gestructureerde PowerPoint-slide als basis voor een infographic'].includes(outputType);
+    if (isFile)       chatParts.push(`Maak dit als ${outputType} en lever het op als bewerkbare Microsoft 365-output.`);
+
+    const chatText = chatParts.join('\n\n');
+
+    // ── Stap 2: brand styling → Copilot IN het geopende bestand
+    let brandText = '';
+    if (useBrand) {
+      const brandStyle = document.getElementById('pbBrandStyle').value;
+      brandText = [
+        'Pas de Sligro-huisstijl toe op de volledige inhoud van dit bestand.',
+        'Gebruik Sligro groen #009564 voor hoofdaccenten, amber #FFC034 spaarzaam als accent, zwart #1A1A1A voor hoofdtekst, wit #FFFFFF voor rust en lichtgrijs #F4F4F4 voor rustige vlakken.',
+        'Gebruik Rockwell voor titels waar mogelijk en Segoe UI voor lopende tekst.',
+        `Maak de inhoud ${brandStyle}.`,
+        'Lever alleen het eindresultaat op. Voeg geen aparte sectie toe over huisstijl of opmaak. Geef geen code of technische uitleg.'
+      ].join('\n');
+    }
+
+    const el = document.getElementById('pbOutput');
+    el._chatRaw  = chatText;
+    el._brandRaw = brandText;
+    el._appName  = appName;
+    el._raw      = chatText;
+
+    if (useBrand) {
+      document.getElementById('modalBrandText').textContent = brandText;
+      document.getElementById('modalAppName').textContent   = appName;
+      document.getElementById('modalAppName2').textContent  = appName;
+    }
+
+    const lbl = (color, text) =>
+      `<span style="color:${color};font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">${text}</span>`;
+
+    // Render stap 1 labels
+    let chatHtml = '';
+    const cp = [...chatParts];
+    if (role)    chatHtml += `${lbl('#8a5c00','ROL')}\n${cp.shift()}\n\n`;
+    if (context) chatHtml += `${lbl('var(--sligro-green)','CONTEXT')}\n${cp.shift()}\n\n`;
+    chatHtml += `${lbl('var(--accent-blue)','TAAK')}\n${cp.shift()}\n\n`;
+    chatHtml += `${lbl('var(--accent-purple)','FORMAAT')}\n${cp.shift()}`;
+    if (source)   chatHtml += `\n\n${lbl('var(--accent-red)','BRON')}\n${cp.shift()}`;
+    if (useBrand) chatHtml += `\n\n${lbl('var(--sligro-green)','UITVOER')}\n${cp.shift()}`;
+
+    let html = '';
+    if (useBrand) {
+      const instrStyle = 'display:block;margin:14px 0 6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;';
+      html  = `<span class="pb-step-header step-chat">Stap 1 — Plak in Copilot Chat</span>\n`;
+      html += `<span style="display:block;font-size:11px;color:var(--text-dim);margin-bottom:10px;">Copilot maakt het bestand aan en levert het als bewerkbare ${appName}-output.</span>`;
+      html += chatHtml;
+      html += `\n\n<span class="pb-step-header step-word">Stap 2 — Open het bestand, plak in Copilot in ${appName}</span>\n`;
+      html += `<span style="display:block;font-size:11px;color:var(--text-dim);margin-bottom:10px;">Dit past de Sligro-huisstijl toe op de gegenereerde inhoud.</span>`;
+      html += brandText;
+      document.getElementById('pbCopyBtns').innerHTML =
+        `<button class="btn btn-ghost" onclick="copyPrompt('chat')"><span class="mi">content_copy</span>Kopieer stap 1</button>` +
+        `<button class="btn btn-ghost" onclick="copyPrompt('brand')" style="margin-left:6px;"><span class="mi">format_paint</span>Kopieer stap 2</button>`;
+    } else {
+      html = chatHtml;
+      document.getElementById('pbCopyBtns').innerHTML =
+        `<button class="btn btn-ghost" onclick="copyPrompt()"><span class="mi">content_copy</span>Kopieer</button>`;
+    }
+
+    el.innerHTML = html;
+    el.style.opacity = '0';
+    setTimeout(() => { el.style.transition = 'opacity 0.25s'; el.style.opacity = '1'; }, 50);
+  }
+
+  function copyPrompt(step) {
+    const el = document.getElementById('pbOutput');
+    const text = step === 'chat'  ? el._chatRaw  :
+                 step === 'brand' ? el._brandRaw :
+                 el._raw || el.innerText;
+    const toast = document.getElementById('toast');
+    toast.textContent = step === 'chat' ? 'Stap 1 gekopieerd' :
+                        step === 'brand' ? 'Opmaakinstructie gekopieerd' : 'Gekopieerd';
+    const showToast = () => {
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    };
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      showToast();
+      if (step === 'chat' && el._brandRaw) {
+        setTimeout(() => {
+          const m = document.getElementById('brandModal');
+          m.style.display = 'flex';
+        }, 400);
+      }
+    });
+  }
+
+  function closeModal() {
+    document.getElementById('brandModal').style.display = 'none';
+  }
+
+  function copyBrandFromModal() {
+    const text = document.getElementById('pbOutput')._brandRaw || '';
+    const toast = document.getElementById('toast');
+    toast.textContent = 'Opmaakinstructie gekopieerd';
+    navigator.clipboard.writeText(text).then(() => {
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    });
+  }
+
+  function toggleCRTF() {
+    const grid  = document.getElementById('crtfGrid');
+    const arrow = document.getElementById('crtfArrow');
+    const open  = grid.style.display !== 'none';
+    grid.style.display  = open ? 'none' : 'grid';
+    arrow.textContent   = open ? 'expand_more' : 'expand_less';
+  }
+
+  function toggleBrandOptions() {
+    const checked = document.getElementById('pbUseBrand').checked;
+    document.getElementById('brandInlineOptions').style.display = checked ? 'block' : 'none';
+  }
+
+  function resetPrompt() {
+    ['pbContext','pbSubject','pbSource'].forEach(id => document.getElementById(id).value = '');
+    ['pbRole','pbAudience'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('pbTask').value   = 'Schrijf';
+    document.getElementById('pbTone').value   = 'professioneel en helder';
+    document.getElementById('pbFormat').value = 'Gebruik bullet points.';
+    document.getElementById('pbUseBrand').checked = false;
+    toggleBrandOptions();
+    document.querySelectorAll('.qp-btn').forEach(b => b.classList.remove('active'));
+    const el = document.getElementById('pbOutput');
+    el.innerHTML = 'Vul de velden in en klik op <strong>Prompt bouwen</strong> om een kant-en-klare Copilot-prompt te genereren.';
+    el._raw = ''; el._chatRaw = ''; el._brandRaw = '';
+    document.getElementById('pbCopyBtns').innerHTML =
+      `<button class="btn btn-ghost" onclick="copyPrompt()"><span class="mi">content_copy</span>Kopieer</button>`;
+  }
+
+  // ── On load: animate hero elements
+  // ── Interactive context window ──────────────────────────────
+  const CTX = {
+    weights: { sys: 800, hist: 5600, rag: 4800, user: 1300 },
+    active:  { sys: true, hist: true, rag: true, user: true },
+    extra: 0,
+    limit: 16000
+  };
+
+  function ctxUpdate() {
+    let used = 0;
+    ['sys','hist','rag','user'].forEach(k => {
+      if (CTX.active[k]) used += (k === 'hist' ? CTX.weights[k] + CTX.extra * 2400 : CTX.weights[k]);
+    });
+    const pct = used / CTX.limit;
+    let drawn = 0;
+    ['sys','hist','rag','user'].forEach(k => {
+      const el = document.getElementById('cs-' + k);
+      if (!el) return;
+      if (!CTX.active[k]) { el.style.width = '0%'; return; }
+      const w = k === 'hist' ? CTX.weights[k] + CTX.extra * 2400 : CTX.weights[k];
+      const share = w / CTX.limit;
+      const allowed = Math.max(0, Math.min(share, 1 - drawn));
+      el.style.width = (allowed * 100) + '%';
+      drawn += allowed;
+    });
+    const over = document.getElementById('cs-over');
+    if (over) over.style.width = pct > 1 ? Math.min((pct - 1) * 200, 10) + '%' : '0%';
+    const tokEl = document.getElementById('ctx-tok');
+    if (tokEl) tokEl.textContent = Math.round(used / 100) * 100;
+    const warn = document.getElementById('ctx-warn');
+    if (!warn) return;
+    if (pct > 1) {
+      warn.textContent = '⚠ Venster vol — vroegste berichten verdwijnen stilletjes';
+      warn.style.color = '#C8001E';
+    } else if (pct > 0.85) {
+      warn.textContent = 'Bijna vol — grote bestanden kunnen context wegdrukken';
+      warn.style.color = '#8a5c00';
+    } else {
+      warn.textContent = '';
+    }
+  }
+
+  function addCtxMsg() {
+    if (CTX.extra >= 3) return;
+    CTX.extra++;
+    if (CTX.extra >= 3) {
+      const btn = document.getElementById('ctx-addbtn');
+      if (btn) btn.disabled = true;
+    }
+    ctxUpdate();
+  }
+
+  // ── Flow ↔ term card linking ─────────────────────────────────
+  const FLOW_MAP = {
+    'fs-input': ['term-prompt','term-zeroshot','term-fewshot'],
+    'fs-ctx':   ['term-token','term-ctxwin','term-toklim','term-sysprompt','term-rag'],
+    'fs-model': ['term-llm','term-temp','term-halluc'],
+    'fs-out':   ['term-skills','term-agent']
+  };
+
+  function initFlowInteraction() {
+    document.querySelectorAll('.llm-flow-step').forEach(step => {
+      const key = Object.keys(FLOW_MAP).find(k => step.classList.contains(k));
+      if (!key) return;
+      step.querySelector('.llm-flow-box').addEventListener('click', e => {
+        if (e.target.closest('.llm-pill, button')) return;
+        const cards = document.querySelectorAll('.term-card[id]');
+        const targets = FLOW_MAP[key];
+        const isActive = step.classList.contains('flow-active');
+        document.querySelectorAll('.llm-flow-step').forEach(s => s.classList.remove('flow-active'));
+        cards.forEach(c => c.classList.remove('term-lit','term-dim'));
+        if (!isActive) {
+          step.classList.add('flow-active');
+          cards.forEach(c => c.classList.add(targets.includes(c.id) ? 'term-lit' : 'term-dim'));
+          const first = document.getElementById(targets[0]);
+          if (first) setTimeout(() => first.scrollIntoView({ behavior:motionOK()?'smooth':'auto', block:'nearest' }), 50);
+        }
+      });
+    });
+
+    document.querySelectorAll('.term-card[data-flow]').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        document.querySelectorAll('.llm-flow-step').forEach(s => {
+          s.querySelector('.llm-flow-box').style.outline =
+            s.classList.contains(card.dataset.flow) ? '2px solid rgba(0,149,100,0.5)' : '';
+        });
+      });
+      card.addEventListener('mouseleave', () => {
+        document.querySelectorAll('.llm-flow-box').forEach(b => b.style.outline = '');
+      });
+    });
+
+    document.querySelectorAll('#ctx-pills .llm-pill').forEach(pill => {
+      pill.addEventListener('click', e => {
+        e.stopPropagation();
+        const key = pill.dataset.ctx;
+        CTX.active[key] = !CTX.active[key];
+        pill.classList.toggle('pill-off', !CTX.active[key]);
+        ctxUpdate();
+      });
+    });
+
+    ctxUpdate();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const hero = document.querySelector('.hero');
+    hero.style.opacity = '0';
+    setTimeout(() => {
+      hero.style.transition = 'opacity 0.8s ease';
+      hero.style.opacity = '1';
+    }, 100);
+    renderTips('intro');
+    initFlowInteraction();
+    initAccordionAria();
+  });
+
+  const motionOK = () => !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+</script>
+</body>
+</html>
