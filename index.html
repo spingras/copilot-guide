@@ -857,6 +857,7 @@
     document.getElementById('promptTab').setAttribute('aria-selected', String(!isAgent));
     document.getElementById('agentTab').setAttribute('aria-selected', String(isAgent));
   }
+  window.showTool = showTool;
 
   const agentTemplateData = [
     {
@@ -1392,6 +1393,11 @@
     arrow.textContent = open ? 'expand_more' : 'expand_less';
     btn.setAttribute('aria-expanded', String(!open));
   }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('promptTab')?.addEventListener('click', () => showTool('prompt'));
+    document.getElementById('agentTab')?.addEventListener('click', () => showTool('agent'));
+  });
 </script>
 </body>
 </html>
