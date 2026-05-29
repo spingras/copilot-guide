@@ -717,6 +717,14 @@
             <textarea id="abKnowledge" rows="2" placeholder="Bijv: SharePoint-map Onboarding, HR-beleid, teamafspraken, relevante procesdocumenten."></textarea>
           </div>
           <div class="field full">
+            <label>Websites <span>Een URL per regel</span></label>
+            <textarea id="abWebsites" rows="2" placeholder="Bijv: https://www.rijksoverheid.nl/&#10;https://www.officielebekendmakingen.nl/"></textarea>
+          </div>
+          <div class="field full">
+            <label>Bestanden <span>Bestandsnamen of mappen</span></label>
+            <input type="text" id="abFiles" placeholder="bijv. onboarding-gids.pdf, beleid-map, wetgeving-bronnen-gids.txt">
+          </div>
+          <div class="field full">
             <label>Taken binnen scope</label>
             <textarea id="abTasks" rows="2" placeholder="Bijv: vragen beantwoorden, stappenplan geven, relevante documenten noemen, samenvatting maken."></textarea>
           </div>
@@ -749,6 +757,29 @@
           <div class="field full">
             <label>Acties of systemen <span>Alleen indien nodig</span></label>
             <input type="text" id="abActions" placeholder="bijv. geen acties, of: ticket aanmaken na expliciete bevestiging">
+          </div>
+          <div class="field full brand-section">
+            <label>Knowledge-instellingen</label>
+            <label class="brand-toggle"><input type="checkbox" id="abOnlySources" checked> Only use specified sources</label>
+            <label class="brand-toggle"><input type="checkbox" id="abSearchWeb"> Search all websites</label>
+            <label class="brand-toggle"><input type="checkbox" id="abOrgProfile"> Reference org chart and profile info</label>
+          </div>
+          <div class="field full brand-section">
+            <label>Capabilities</label>
+            <label class="brand-toggle"><input type="checkbox" id="abCreateDocs" checked> Create documents, charts, and code</label>
+            <label class="brand-toggle"><input type="checkbox" id="abCreateImages"> Create images</label>
+          </div>
+          <div class="field full">
+            <label>Suggested prompt 1</label>
+            <input type="text" id="abPrompt1" placeholder="Titel | Bericht">
+          </div>
+          <div class="field full">
+            <label>Suggested prompt 2</label>
+            <input type="text" id="abPrompt2" placeholder="Titel | Bericht">
+          </div>
+          <div class="field full">
+            <label>Suggested prompt 3</label>
+            <input type="text" id="abPrompt3" placeholder="Titel | Bericht">
           </div>
         </div>
       </div>
@@ -808,6 +839,147 @@
 
 <script>
   const motionOK = () => !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const escapeHTML = value => String(value || '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[ch]));
+
+  function showTool(tool) {
+    const isAgent = tool === 'agent';
+    document.getElementById('promptView').hidden = isAgent;
+    document.getElementById('agentView').hidden = !isAgent;
+    document.getElementById('promptTab').classList.toggle('active', !isAgent);
+    document.getElementById('agentTab').classList.toggle('active', isAgent);
+    document.getElementById('promptTab').setAttribute('aria-selected', String(!isAgent));
+    document.getElementById('agentTab').setAttribute('aria-selected', String(isAgent));
+  }
+
+  const agentTemplateData = [
+    {
+      name: 'Onboarding Hulp',
+      type: 'kennisagent',
+      goal: 'Nieuwe medewerkers helpen met praktische vragen over onboarding, teamafspraken en eerste stappen.',
+      audience: 'nieuwe medewerkers en hun buddy of leidinggevende',
+      knowledge: "SharePoint-map Onboarding, teamafspraken, HR-startdocumenten en relevante procespagina's.",
+      websites: '',
+      files: 'onboarding-gids.pdf, teamafspraken.docx',
+      tasks: 'Vragen beantwoorden, stappenplannen geven, relevante documenten noemen en samenvatten wat iemand als volgende stap moet doen.',
+      boundaries: 'Geen HR-besluiten nemen, geen arbeidsvoorwaarden interpreteren buiten de bron en geen ontbrekend beleid verzinnen.',
+      tone: 'coachend, helder en geruststellend',
+      output: 'Geef eerst een kort antwoord, daarna stappen en sluit af met bron of vervolgactie.',
+      clarify: 'de afdeling, rol, startdatum of gewenste locatie ontbreekt',
+      actions: 'Geen acties. Verwijs naar HR of de leidinggevende wanneer bevestiging nodig is.',
+      prompts: [
+        'Start eerste week | Welke stappen moet ik in mijn eerste week afronden?',
+        'Teamafspraken | Vat de belangrijkste teamafspraken samen voor een nieuwe collega.',
+        'Wie vraag ik? | Bij wie kan ik terecht voor vragen over [onderwerp]?'
+      ]
+    },
+    {
+      name: 'Beleidshulp',
+      type: 'kennisagent',
+      goal: 'Collega\'s helpen om snel antwoorden te vinden in interne beleidsdocumenten en werkinstructies.',
+      audience: 'Sligro-collega\'s die beleid of werkinstructies willen begrijpen',
+      knowledge: 'Actuele beleidsdocumenten, werkinstructies en FAQ-pagina\'s op SharePoint.',
+      websites: 'https://www.rijksoverheid.nl/',
+      files: 'beleidsoverzicht.pdf, werkinstructies.docx',
+      tasks: 'Antwoorden geven op basis van bronnen, samenvatten, uitzonderingen benoemen en verwijzen naar het juiste document.',
+      boundaries: 'Geen beleid verzinnen, geen juridisch advies geven en duidelijk zeggen wanneer de bron geen antwoord bevat.',
+      tone: 'professioneel, feitelijk en zorgvuldig',
+      output: 'Geef eerst een kort antwoord, daarna stappen en sluit af met bron of vervolgactie.',
+      clarify: 'het onderwerp, de afdeling of het land/de vestiging ontbreekt',
+      actions: 'Geen acties. Verwijs door naar de proceseigenaar bij twijfel.',
+      prompts: [
+        'Beleid samenvatten | Vat het beleid over [onderwerp] samen in maximaal 5 bullets.',
+        'Uitzonderingen | Welke uitzonderingen of aandachtspunten gelden voor [situatie]?',
+        'Bron vinden | Waar staat de meest relevante bron voor [vraag]?'
+      ]
+    },
+    {
+      name: 'Projectstatus Agent',
+      type: 'procesagent',
+      goal: 'Projectleiders helpen om status, risico\'s, besluiten en open acties uit projectinformatie samen te vatten.',
+      audience: 'projectleiders, stuurgroepen en managementteams',
+      knowledge: 'Projectmap in SharePoint, Teams-kanaal, actielijsten, besluitenlijsten en recente projectdocumenten.',
+      websites: '',
+      files: 'projectplan.docx, actielijst.xlsx, besluitenlijst.docx',
+      tasks: 'Status samenvatten, risico\'s benoemen, open acties ordenen en een managementupdate voorbereiden.',
+      boundaries: 'Geen voortgang claimen zonder bron, geen eigenaar of deadline verzinnen en onzekerheid expliciet maken.',
+      tone: 'compact, zakelijk en managementgericht',
+      output: 'Geef een samenvatting, risico\'s, acties en open vragen.',
+      clarify: 'projectnaam, periode of gewenste rapportagevorm ontbreekt',
+      actions: 'Geen wijzigingen uitvoeren zonder expliciete bevestiging.',
+      prompts: [
+        'Statusupdate | Maak een projectstatus met voortgang, risico\'s en open acties.',
+        'Risico\'s | Welke risico\'s vragen deze week aandacht?',
+        'Managementupdate | Maak een compacte update voor het managementteam.'
+      ]
+    },
+    {
+      name: 'Klantbezoek Agent',
+      type: 'procesagent',
+      goal: 'Accountmanagers helpen om klantbezoeken voor te bereiden met relevante informatie en gesprekspunten.',
+      audience: 'accountmanagers en salescollega\'s',
+      knowledge: 'Klantdocumenten, eerdere correspondentie, gespreksnotities, accountplannen en relevante orderinformatie.',
+      websites: '',
+      files: 'accountplan.docx, gespreksnotities.docx',
+      tasks: 'Klantcontext samenvatten, gespreksonderwerpen voorstellen, kansen en aandachtspunten benoemen.',
+      boundaries: 'Geen vertrouwelijke informatie delen buiten toegestane bronnen en geen commerciële toezeggingen verzinnen.',
+      tone: 'kort, praktisch en vriendelijk',
+      output: 'Geef een checklist met concrete vervolgstappen.',
+      clarify: 'klantnaam, bezoekdatum of doel van het gesprek ontbreekt',
+      actions: 'Geen acties. Laat gebruiker zelf afspraken of vervolgacties vastleggen.',
+      prompts: [
+        'Bezoek voorbereiden | Maak een voorbereiding voor mijn bezoek aan [klant].',
+        'Gesprekspunten | Welke gesprekspunten zijn relevant op basis van recente informatie?',
+        'Vervolgactie | Welke acties moet ik na dit bezoek vastleggen?'
+      ]
+    },
+    {
+      name: 'KPI Analyse Agent',
+      type: 'analyseagent',
+      goal: 'Teams helpen KPI-rapportages te begrijpen en afwijkingen, trends en vervolgvragen te identificeren.',
+      audience: 'business owners, analisten en management',
+      knowledge: 'KPI-definities, rapportages, Excel-bestanden, Power BI-export en toelichtende documenten.',
+      websites: '',
+      files: 'kpi-definities.docx, rapportage.xlsx',
+      tasks: 'Trends samenvatten, afwijkingen benoemen, mogelijke oorzaken formuleren en vervolgvragen voorstellen.',
+      boundaries: 'Geen causale conclusies trekken zonder bewijs en cijfers altijd als te controleren concept presenteren.',
+      tone: 'professioneel, feitelijk en zorgvuldig',
+      output: 'Geef een samenvatting, risico\'s, acties en open vragen.',
+      clarify: 'periode, KPI-definitie of vergelijkingsbasis ontbreekt',
+      actions: 'Geen acties. Adviseer controle in bronrapportage.',
+      prompts: [
+        'KPI overzicht | Vat de belangrijkste KPI-afwijkingen samen.',
+        'Trendanalyse | Welke trends vallen op in deze rapportage?',
+        'Vervolgvragen | Welke vragen moeten we stellen voordat we conclusies trekken?'
+      ]
+    },
+    {
+      name: 'Campagne Briefing',
+      type: 'procesagent',
+      goal: 'Marketingcollega\'s helpen campagnebriefings scherper, vollediger en beter uitvoerbaar te maken.',
+      audience: 'marketing, e-commerce en category teams',
+      knowledge: 'Campagnebriefings, doelgroepinformatie, merkafspraken, productinformatie en eerdere campagneresultaten.',
+      websites: '',
+      files: 'campagnebriefing.docx, productinformatie.xlsx, merkafspraken.pdf',
+      tasks: 'Briefings structureren, ontbrekende onderdelen benoemen, kernboodschap aanscherpen en conceptteksten voorbereiden.',
+      boundaries: 'Geen claims verzinnen, geen resultaten beloven en altijd vragen om product- of doelgroepdetails als die ontbreken.',
+      tone: 'kort, praktisch en vriendelijk',
+      output: 'Geef een checklist met concrete vervolgstappen.',
+      clarify: 'doelgroep, campagneperiode, kanaal of productinformatie ontbreekt',
+      actions: 'Geen acties. Laat publicatie of verzending altijd door een mens bevestigen.',
+      prompts: [
+        'Briefing aanscherpen | Welke onderdelen ontbreken nog in deze campagnebriefing?',
+        'Kernboodschap | Formuleer een kernboodschap voor [doelgroep].',
+        'Checklist | Maak een checklist voordat deze campagne live gaat.'
+      ]
+    }
+  ];
 
   const quickPromptData = [
     { label:"Agenda deze week", context:"Ik wil een overzicht van mijn verplichtingen en afspraken voor de komende week.", role:"", task:"Maak een overzicht van", subject:"mijn agenda voor deze week", audience:"", tone:"bondig en to-the-point", format:"Gebruik een tabel.", source:"mijn agenda en afspraken in Outlook" },
@@ -1024,6 +1196,201 @@
     el._raw = ''; el._chatRaw = ''; el._brandRaw = '';
     document.getElementById('pbCopyBtns').innerHTML =
       `<button class="output-copy-btn" onclick="copyPrompt()"><span class="mi" style="font-size:14px;">content_copy</span>Kopieer</button>`;
+  }
+
+  function loadAgentTemplate(idx) {
+    const d = agentTemplateData[idx];
+    if (!d) return;
+    document.getElementById('abName').value = d.name;
+    document.getElementById('abType').value = d.type;
+    document.getElementById('abGoal').value = d.goal;
+    document.getElementById('abAudience').value = d.audience;
+    document.getElementById('abKnowledge').value = d.knowledge;
+    document.getElementById('abWebsites').value = d.websites || '';
+    document.getElementById('abFiles').value = d.files || '';
+    document.getElementById('abTasks').value = d.tasks;
+    document.getElementById('abBoundaries').value = d.boundaries;
+    document.getElementById('abTone').value = d.tone;
+    document.getElementById('abOutput').value = d.output;
+    document.getElementById('abClarify').value = d.clarify;
+    document.getElementById('abActions').value = d.actions;
+    document.getElementById('abOnlySources').checked = true;
+    document.getElementById('abSearchWeb').checked = false;
+    document.getElementById('abOrgProfile').checked = false;
+    document.getElementById('abCreateDocs').checked = true;
+    document.getElementById('abCreateImages').checked = false;
+    (d.prompts || []).forEach((prompt, i) => {
+      const el = document.getElementById('abPrompt' + (i + 1));
+      if (el) el.value = prompt;
+    });
+    document.querySelectorAll('.agent-chip').forEach((b, i) => b.classList.toggle('active', i === idx));
+    buildAgent();
+  }
+
+  function buildAgent() {
+    const nameEl = document.getElementById('abName');
+    const name = nameEl.value.trim();
+    if (!name) {
+      nameEl.style.borderColor = 'var(--red)';
+      nameEl.placeholder = 'Geef de agent een korte naam';
+      nameEl.focus();
+      return;
+    }
+    nameEl.style.borderColor = '';
+
+    const type = document.getElementById('abType').value;
+    const goal = document.getElementById('abGoal').value.trim();
+    const audience = document.getElementById('abAudience').value.trim();
+    const knowledge = document.getElementById('abKnowledge').value.trim();
+    const websites = document.getElementById('abWebsites').value.trim();
+    const files = document.getElementById('abFiles').value.trim();
+    const tasks = document.getElementById('abTasks').value.trim();
+    const boundaries = document.getElementById('abBoundaries').value.trim();
+    const tone = document.getElementById('abTone').value;
+    const output = document.getElementById('abOutput').value;
+    const clarify = document.getElementById('abClarify').value.trim();
+    const actions = document.getElementById('abActions').value.trim();
+    const onlySources = document.getElementById('abOnlySources').checked;
+    const searchWeb = document.getElementById('abSearchWeb').checked;
+    const orgProfile = document.getElementById('abOrgProfile').checked;
+    const createDocs = document.getElementById('abCreateDocs').checked;
+    const createImages = document.getElementById('abCreateImages').checked;
+    const prompts = [1, 2, 3]
+      .map(i => document.getElementById('abPrompt' + i).value.trim())
+      .filter(Boolean);
+
+    const description = `${name} is een ${type} voor ${audience || 'de beoogde gebruikersgroep'}. De agent helpt met ${goal || 'een duidelijk afgebakende taak'} en gebruikt daarvoor alleen relevante bronnen.`;
+    const instructionText = [
+      'ROLE',
+      `Jij bent ${name}, een ${type} voor Sligro.`,
+      '',
+      'CONTEXT',
+      audience
+        ? `Je wordt gebruikt door ${audience}.`
+        : 'Je wordt gebruikt door Sligro-collega\'s die ondersteuning nodig hebben binnen jouw afgebakende scenario.',
+      knowledge
+        ? `Je werkt met deze kenniscontext: ${knowledge}.`
+        : 'Je werkt met de kennisbronnen die in Agent Builder zijn toegevoegd.',
+      '',
+      'GOAL & TASKS',
+      goal || 'Help gebruikers met het specifieke doel waarvoor deze agent is gemaakt.',
+      tasks ? `Taken binnen scope: ${tasks}.` : 'Beantwoord vragen, vat informatie samen en geef concrete vervolgstappen.',
+      '',
+      'BEHAVIOR',
+      `Schrijf ${tone}.`,
+      `Vraag om verduidelijking wanneer ${clarify || 'belangrijke context ontbreekt'}.`,
+      'Gebruik gekoppelde bronnen wanneer feitelijke juistheid belangrijk is.',
+      onlySources ? 'Gebruik alleen opgegeven bronnen wanneer het antwoord feitelijk of beleidsmatig is.' : 'Gebruik opgegeven bronnen als primaire basis en benoem wanneer algemene kennis wordt gebruikt.',
+      'Geef duidelijk aan wanneer een bron geen antwoord bevat.',
+      '',
+      'BOUNDARIES',
+      boundaries || 'Verzin geen feiten, beleid, cijfers, deadlines, bronnen of besluiten.',
+      actions || 'Voer geen acties uit in externe systemen zonder expliciete bevestiging.',
+      '',
+      'OUTPUT FORMAT',
+      output
+    ].join('\n');
+
+    const knowledgeText = [
+      'Knowledge',
+      knowledge || '- Voeg gerichte SharePoint-sites, bestanden, meetings, chats, e-mails of websites toe.',
+      websites ? `\nWebsites\n${websites.split(/\n+/).map(url => `- ${url}`).join('\n')}` : '',
+      files ? `\nUploaded files\n${files.split(',').map(file => `- ${file.trim()}`).join('\n')}` : '',
+      '',
+      `Search all websites: ${searchWeb ? 'On' : 'Off'}`,
+      `Only use specified sources: ${onlySources ? 'On' : 'Off'}`,
+      `Reference org chart and profile info: ${orgProfile ? 'On' : 'Off'}`
+    ].filter(Boolean).join('\n');
+
+    const capabilityText = [
+      'Capabilities',
+      `Create documents, charts, and code: ${createDocs ? 'On' : 'Off'}`,
+      `Create images: ${createImages ? 'On' : 'Off'}`
+    ].join('\n');
+
+    const suggestedPromptText = prompts.length
+      ? prompts.map(item => {
+          const [title, ...messageParts] = item.split('|');
+          const message = messageParts.join('|').trim();
+          return `- ${title.trim()}${message ? `: ${message}` : ''}`;
+        }).join('\n')
+      : [
+          `- Waar kan deze agent mij mee helpen?`,
+          `- Vat de belangrijkste punten samen over [onderwerp] op basis van de gekoppelde bronnen.`,
+          `- Welke stappen moet ik nemen voor [situatie]?`
+        ].join('\n');
+
+    const raw = [
+      `Agentnaam: ${name}`,
+      '',
+      'Beschrijving',
+      description,
+      '',
+      'Instructies',
+      instructionText,
+      '',
+      knowledgeText,
+      '',
+      capabilityText,
+      '',
+      'Suggested prompts',
+      suggestedPromptText
+    ].join('\n');
+
+    const html = [
+      `<span class="pb-step-header step-chat">Agentnaam</span>\n${escapeHTML(name)}`,
+      `<span class="pb-step-header step-word">Beschrijving</span>\n${escapeHTML(description)}`,
+      `<span class="pb-step-header step-chat">Instructions</span>\n${escapeHTML(instructionText)}`,
+      `<span class="pb-step-header step-word">Knowledge</span>\n${escapeHTML(knowledgeText)}`,
+      `<span class="pb-step-header step-chat">Capabilities</span>\n${escapeHTML(capabilityText)}`,
+      `<span class="pb-step-header step-word">Suggested prompts</span>\n${escapeHTML(suggestedPromptText)}`
+    ].join('\n\n');
+
+    const el = document.getElementById('abOutputText');
+    el._raw = raw;
+    el.innerHTML = html;
+    el.classList.add('has-content');
+    el.style.opacity = '0';
+    setTimeout(() => { el.style.transition = 'opacity 0.2s'; el.style.opacity = '1'; }, 40);
+  }
+
+  function copyAgent() {
+    const el = document.getElementById('abOutputText');
+    const text = el._raw || el.innerText;
+    if (!text) return;
+    const toast = document.getElementById('toast');
+    toast.textContent = 'Agent-configuratie gekopieerd';
+    navigator.clipboard.writeText(text).then(() => {
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    });
+  }
+
+  function resetAgent() {
+    ['abName','abGoal','abAudience','abKnowledge','abWebsites','abFiles','abTasks','abBoundaries','abClarify','abActions','abPrompt1','abPrompt2','abPrompt3'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('abType').value = 'kennisagent';
+    document.getElementById('abTone').value = 'kort, praktisch en vriendelijk';
+    document.getElementById('abOutput').value = 'Geef eerst een kort antwoord, daarna stappen en sluit af met bron of vervolgactie.';
+    document.getElementById('abOnlySources').checked = true;
+    document.getElementById('abSearchWeb').checked = false;
+    document.getElementById('abOrgProfile').checked = false;
+    document.getElementById('abCreateDocs').checked = true;
+    document.getElementById('abCreateImages').checked = false;
+    document.querySelectorAll('.agent-chip').forEach(b => b.classList.remove('active'));
+    const el = document.getElementById('abOutputText');
+    el.innerHTML = 'Vul de velden in en klik op <strong>Agent bouwen</strong> om een configureerbare agent-opzet te genereren.';
+    el.classList.remove('has-content');
+    el._raw = '';
+  }
+
+  function toggleAgentMethod() {
+    const grid = document.getElementById('agentMethodGrid');
+    const arrow = document.getElementById('agentMethodArrow');
+    const btn = arrow.closest('button');
+    const open = grid.style.display !== 'none';
+    grid.style.display = open ? 'none' : 'grid';
+    arrow.textContent = open ? 'expand_more' : 'expand_less';
+    btn.setAttribute('aria-expanded', String(!open));
   }
 </script>
 </body>
